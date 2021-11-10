@@ -1,0 +1,7 @@
+
+
+# Executive Summary
+
+This document summarizes alternative forecasts of "`r params$Abundance`" for "`r params$Stock`" "`r params$Species`" 
+for return year "`r params$FCYear`" 
+

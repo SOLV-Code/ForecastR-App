@@ -1,0 +1,9 @@
+# LIST OF THINGS THAT NEED TO BE CHANGED AFTER COPYING THE LATEST APP FILES INTO THIS REPO
+
+In server.R
+
+* change "../../R" to "R/"  (at the top, and near the end for report generation
+
+Note: This gives a warning in "R/2_MainFunctionCall.R", but shouldn't affect anything (it's just the default setting in the function)
+
+* change "../extdata/TemplateReport" to "TemplateReport"

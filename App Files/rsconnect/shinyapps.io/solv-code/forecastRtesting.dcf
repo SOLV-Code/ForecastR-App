@@ -1,0 +1,11 @@
+name: forecastRtesting
+title: forecastR_TEST
+username:
+account: solv-code
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4459895
+bundleId: 5170166
+url: https://solv-code.shinyapps.io/forecastRtesting/
+when: 1635003695.21706
+lastSyncTime: 1635003695.21706

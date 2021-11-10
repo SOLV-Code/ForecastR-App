@@ -1,0 +1,141 @@
+---
+title: "Custom Word Report - Testing"
+output: word_document
+params:
+  Stock: NA
+  Species: NA
+  Abundance: NA
+  FCYear: NA  
+  Table_Multi_Pt_FC: NA
+  multifit.out: NA
+  incl.exec.summary: NA
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(echo = FALSE)
+```
+
+
+# Testing the Custom Report Set-Up
+
+
+incl.exec.summary: `r params$incl.exec.summary`
+
+Stock: `r params$Stock`
+
+Species:  `r params$Species`
+
+Abundance:  `r params$Abundance`
+
+ForecastYear:  `r params$FCYear`
+
+
+######
+
+
+
+
+
+
+
+```{r, echo = params$incl.exec.summary }
+
+cat("
+# Executive Summary (TEST 1)
+
+This document summarizes alternative forecasts of `r params$Abundance` for `r params$Stock` `r params$Species`
+for return year `r params$FCYear`. 
+")
+
+```
+
+
+
+
+```{r, echo=FALSE, results='asis'}
+
+
+
+
+if(params$incl.exec.summary){
+
+#print("params$incl.exec.summary")
+#print(params$incl.exec.summary)
+
+print("TEST 2")
+
+print(getwd())
+#exec.summ <- knitr::knit_child('Markdown/CustomReportParts/2_CustomReport_ExecSummary.Rmd', quiet = FALSE)
+
+
+#cat(exec.summ , sep = '\n')
+
+}
+
+```
+
+
+
+
+```{asis, include = params$incl.exec.summary }
+
+cat(`
+# Executive Summary (TEST 3)
+
+This document summarizes alternative forecasts of `r params$Abundance` for `r params$Stock` `r params$Species`
+for return year `r params$FCYear`. 
+`)
+
+```
+
+
+
+
+
+
+
+
+
+\clearpage
+
+```{r echo = FALSE, results = "asis"}
+kable(params$Table_Multi_Pt_FC, 
+		caption = paste0("Table 1:", params$FCYear, " Forecast of ",params$Abundance, " for ",params$Stock," ",params$Species   ),
+		format = "pandoc")
+```
+
+
+
+```{r echo = FALSE, results = "asis"}
+
+					multi.ptfc <- params$multifit.out[["table.ptfc"]]
+									
+					model.names <- paste0(dimnames(multi.ptfc )[[1]]) #," (",round(rank.table[order.idx,"average.rank"],1),")")
+					age.classes <- dimnames(multi.ptfc )[[2]]				 
+					
+					n.models <- length(model.names)
+					
+					for(age.plot in age.classes){
+					
+					vec.plot <- multi.ptfc[,age.plot]
+					
+					par(mai=c(0.4,1,0.4,0.4))
+					plot(vec.plot , n.models:1, axes=FALSE,xlim = c(0,max(vec.plot)), xlab="Forecast",ylab="",
+							pch=19,type="p",cex=1,col="red",cex.lab=0.9,main=age.plot,col.main="darkblue")
+					abline(h=1:n.models,col="lightgrey")
+					points(vec.plot , n.models:1, pch=19,type="p",cex=0.9,col="red")
+					text(vec.plot , (n.models:1)+0.2, labels=prettyNum(round(vec.plot),big.mark=","),cex=0.7,col="red")
+					axis(2,at=n.models:1,labels=model.names,las=2,cex.axis=0.9)
+					}
+
+```
+
+
+
+
+
+
+
+
+

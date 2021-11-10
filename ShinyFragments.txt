@@ -1,0 +1,25 @@
+tags$h2("Custom Report"),
+					 					 tags$h4("Testing Section Selection:"),
+					 					 checkboxInput("customrep.exec.summary","Executive Summary",value=TRUE),
+					 					 checkboxInput("customrep.general.intro","General Intro",value=TRUE),
+					 					 tags$hr(),
+					 					 tags$h4("Testing Re-Using Section Template:"),
+					 					 checkboxInput("customrep.details.by.age","FC details by Age",value=TRUE),
+					 					 tags$hr(),
+					 					 downloadButton("downloadComparisonRepWordCustom", "Download Custom MSWord Report"),
+					 					 tags$hr(),
+					 					 tags$p("NOTE: The rest is a placeholder. Not working yet!"),
+					 					 tags$h4("Tables to include:"),
+					 					 checkboxInput("customrep.rankingdetails","ranking details table by age",value=TRUE),
+					 					 tags$hr(),
+					 					 tags$h4("Figures to include:"),
+					 					 checkboxInput("customrep.fitted_ts","time series of fitted and observed values",value=TRUE),
+					 					 checkboxInput("customrep.fc.distr","forecast distribution plot",value=TRUE),
+					 					 checkboxInput("customrep.fitdiagnostics","diagnostic plots of model fit by age",value=TRUE),
+					 					 tags$hr()
+										 
+										 
+										 
+										 
+
+

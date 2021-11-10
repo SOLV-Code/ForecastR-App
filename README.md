@@ -1,2 +1,2 @@
-# ForecastR-App
-This is the ForecastR version set up for deployment to shinyapps.io 
+# forecastR-ServerApp
+This is the forecastR version set up for deployment to shinyapps.io
