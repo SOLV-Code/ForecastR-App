@@ -1,0 +1,12 @@
+
+
+install.packages("ggplot2")
+install.packages("DT")
+install.packages("markdown")
+install.packages("rmarkdown")
+install.packages("shiny")
+install.packages("shinydashboard")
+install.packages("shinyjqui")
+install.packages("shinyFiles")
+
+meboot

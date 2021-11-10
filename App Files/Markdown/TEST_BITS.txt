@@ -1,0 +1,22 @@
+
+
+NOT WORKING --------
+
+```{r echo=FALSE, results='asis'}
+
+print("------------")
+print(params$incl.exec.summary)
+
+if(params$incl.exec.summary){
+
+#print("FLAG")
+
+#exec.piece <- knitr::knit_child('2_CustomReport_ExecSummary.Rmd', quiet = TRUE)
+#print(exec.piece)
+#cat(exec.piece, sep = '\n')
+
+}
+
+
+
+```
