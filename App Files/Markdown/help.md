@@ -14,11 +14,10 @@ go to the [*main project repository*](https://github.com/SalmonForecastR/SalmonF
 First, narrow down the source of the problem:
 
 
-* If nothing works, check the formatting of your data file against the [sample input files](https://www.dropbox.com/sh/3fouksm7p1pxrzv/AABQjY74uuHa0Gd8a7MHyUoUa?dl=0).
+* If nothing works, check the formatting of your data file against the [sample input files](https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0).
 * If a specific model doesn't work on the *Explore Tab*, try changing one of the settings (e.g. if the retrospective interval doesn't work, check the prediction interval instead).
 * If the *Compare Tab* doesn't work, check each candidate model *with the exact same settings on the *Explore Tab*.
-* If you are comfortable with R, try fitting the same model using the package functions (Starting with this
- **LINK TO Demo Script**.
+* If you are comfortable with R, try fitting the same model using the package functions (Starting with this [Demo Script](https://github.com/SalmonForecastR/ForecastR-Releases/wiki/4-Using-the-ForecastR-package)).
 
 
 Then, file a bug report at [Issue Page](https://github.com/SalmonForecastR/ForecastR-Releases/issues).
