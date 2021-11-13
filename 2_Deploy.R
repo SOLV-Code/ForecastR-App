@@ -22,7 +22,7 @@ load_or_install(c("rsconnect","shiny","shinydashboard","shinyjqui","shiny","shin
 # test version deploy
 rsconnect::deployApp(appDir="App Files", appName="forecastRtesting",appTitle="forecastR_TEST")
 
-# run the app
+# deploy the app
 rsconnect::deployApp(appDir="App Files", appTitle="forecastR")
 
 rsconnect::showLogs(appPath="App Files", appFile="forecastR")
