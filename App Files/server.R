@@ -1161,8 +1161,8 @@ output$axis.label.sel <- renderUI({
 
 		compare.ptfc.table.merged <- reactive({
 					fc.table <-  compare.ptfc.table()
-					rank.table <- compare.ranking.table()
-					merged.table <- cbind(AvgRank = round(rank.table[,"rank.avg"],2),fc.table)
+					rank.table <- compare.cumul.ranking.table()
+					merged.table <- cbind(SumRanks = round(rank.table[,"rank.sum"],2),fc.table)
 
 
 

@@ -13,6 +13,8 @@ library("shiny")
 library("shinydashboard")
 library("shinyjqui")
 library("shinyFiles")
+library("shinybusy")
+
 
 
 
@@ -136,10 +138,12 @@ tabPanel("General Settings", value= "general.settings",
 
     tabPanel("Explore", value= "precheck",
 
+             
 	pageWithSidebar(
 	headerPanel("Explore Models"),
 
 	sidebarPanel(
+	  add_busy_spinner(spin = "fading-circle"),
 		uiOutput("model.menu.precheck"),
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		conditionalPanel(condition = "input['model.use.precheck'] == 'ReturnRate'",
@@ -247,6 +251,7 @@ tabPanel("General Settings", value= "general.settings",
 
 		#actionButton("addmodel.compare", "x Add a Model"),
 		#actionButton("resetmodel.compare", "x Reset Models"),
+		add_busy_spinner(spin = "fading-circle"),
 		tags$p("Note: Running a new batch of models takes a little time"),
 		selectizeInput("compare.ageclass", "Age Class", choices = ages.menu.list.multi, selected=ages.menu.list[1]),
 		selectizeInput("compare.plotsort", "Sort Plot By", choices = c("AvgRank","Forecast"), selected="AvgRank"),
