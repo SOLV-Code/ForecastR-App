@@ -1,6 +1,6 @@
-#### Version 1.0: 2021-11-15
+#### Version 1.1: 2022-02-10
 
-You are working with the first full release of the SalmonForecastR App.
+You are working with an update of the first full release of the SalmonForecastR App.
 The ForecastR team is trying to address quirks and bugs
 as they are found by users like you. 
 
@@ -9,6 +9,23 @@ and to add any new bugs/issues with this prototype,
 go to **[this github thread](https://github.com/SalmonForecastR/ForecastR-Releases/issues/1)**
 
 For more information about the app, check the *Help* and *About* tabs.
+
+
+**Important Reminders**
+
+
+* Legal: The *ForecastR* app and package are being shared as free, open-source products without
+any warranties or liabilities. For details, check the [GNU General Public License v3.0](https://github.com/SalmonForecastR/ForecastR-Releases/blob/main/LICENSE)
+* Statistical: *ForecastR* doesn't have a quality-control step evaluating the data you feed in. It
+can't decide which candidate models make sense for your data set, and which candidate forecast is the 
+most appropriate. The design focus has been on automating the number-crunching steps to free up 
+analysts' time for exploration and interpretation.
+
+
+
+
+
+
 
 **What's New?**
 
