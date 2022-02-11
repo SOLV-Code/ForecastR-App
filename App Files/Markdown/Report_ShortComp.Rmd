@@ -36,7 +36,7 @@ This document contains `r dim(params$multifit.out[["table.ptfc"]])[1]` alternati
 ```{r echo = FALSE, results = "asis"}
 
 
-caption.use <- paste0("Table 1:", params$FCYear, " Forecast of ",params$Abundance, " for ",params$Stock," ",params$Species,". Each row shows age-specific estimates for one of the alternative models. AvgRank is the rank of that model across age classes"    )
+caption.use <- paste0("Table 1:", params$FCYear, " Forecast of ",params$Abundance, " for ",params$Stock," ",params$Species,". Each row shows age-specific estimates for one of the alternative models. SumRank is the sum of ranks for that model across age classes, where each age-specific rank is the average across selected performance measures (e.g., MAE, MRE, etc.; see Ranking Details section)"    )
 
 kable(params$Table_Multi_Pt_FC, 
 		caption = caption.use,
