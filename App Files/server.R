@@ -1160,11 +1160,18 @@ output$axis.label.sel <- renderUI({
 
 
 		compare.ptfc.table.merged <- reactive({
-					fc.table <-  compare.ptfc.table()
-					rank.table <- compare.cumul.ranking.table()
-					merged.table <- cbind(SumRanks = round(rank.table[,"rank.sum"],2),fc.table)
+					fc.table <-  compare.ptfc.table() %>% as.data.frame() %>% rownames_to_column("Label")
+					rank.table <- compare.cumul.ranking.table() %>% as.data.frame() %>% rownames_to_column("Label")
+					
+					print(fc.table)
+					print(rank.table)
+					
+					
+					merged.table <- left_join(rank.table %>% select(Label,rank.sum), fc.table, by = "Label") %>%
+					                   column_to_rownames("Label")
+					#merged.table <- cbind(SumRanks = round(rank.table[,"rank.sum"],2),fc.table)
 
-
+            print("flag1")
 
 					return(merged.table)
 					})
