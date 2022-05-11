@@ -143,7 +143,7 @@ tabPanel("General Settings", value= "general.settings",
 	headerPanel("Explore Models"),
 
 	sidebarPanel(
-	  add_busy_spinner(spin = "fading-circle"),
+	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
 		uiOutput("model.menu.precheck"),
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		conditionalPanel(condition = "input['model.use.precheck'] == 'ReturnRate'",
