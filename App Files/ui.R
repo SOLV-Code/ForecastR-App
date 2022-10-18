@@ -149,17 +149,21 @@ tabPanel("General Settings", value= "general.settings",
 	sidebarPanel(
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
 		uiOutput("model_menu_precheck"),
-		bsTooltip("model_menu_precheck", "Select a type of forecasting model.", 
-		          "right", options = list(container = "body")),
+		bsTooltip("model_menu_precheck", "Select a type of forecasting model. Available models are determined based on the input data.",
+		          placement = "bottom"),
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
-										 uiOutput("pred.var.precheck.menu"),
+										 uiOutput("pred_var_precheck_menu"),
+										 bsPopover("pred_var_precheck_menu", title = "Predictor Variable", content = 
+										             paste("Candidate variables are determined from the data set, if available."), "top", trigger = "hover"),
 										 selectizeInput("rate_avg_precheck", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
-										 bsTooltip("rate_avg_precheck", "Return rate models use observed average. Choose the type of average here", 
-										           "right", options = list(container = "body")),
+										 bsPopover("rate_avg_precheck", title = "Type of Average", content = 
+										             paste("Return rate models use observed average. Choose the type of average here.",
+										             "wtmean = weighted arithmentic mean, mean = arithmetic mean, median = median."), 
+										           "top", trigger = "hover"),
 										 numericInput("last_n_precheck", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
 										 bsPopover("last_n_precheck", title = "Time Window", content = "Use the last n observations to calculate the rate", 
-										           "right", trigger = "hover")
+										           "right", trigger = "click")
 		), # end conditional panel for return rate
 		conditionalPanel(condition = "input['model_use_precheck'] == 'TimeSeriesArima' || input['model_use_precheck'] == 'TimeSeriesExpSmooth'",
 										 uiOutput("boxcox.precheck.menu")
