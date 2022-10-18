@@ -2,6 +2,9 @@
 # INSERT PASSWORD STEP (CHECK WITH JOHN SON)
 
 
+
+
+
 function(input, output, session) {
 
 
@@ -40,6 +43,7 @@ library("purrr")
 library("tidyr")
 library("tibble")
 library("readr")
+library("shinyBS")
 
 
 
@@ -131,7 +135,7 @@ model.list <-  reactive({
 
 
 	# remove any columns that have only NA values
-	# this happens agaion in prepData(), but that hasn't happened yet and
+	# this happens again in prepData(), but that hasn't happened yet and
 	# need to exclude ReturnRate/ComplexSinb if Pred_or Cov_ are all NA
 	data.file.tmp  <- data.file.tmp[,colSums(!is.na(data.file.tmp)) >0]
 
@@ -202,8 +206,8 @@ axis.label.default <-  reactive({
 
 
 # model list for Explore tab
-output$model.menu.precheck <- renderUI({
-	selectizeInput("model.use.precheck", "Model Type", choices = model.list(),
+output$model_menu_precheck <- renderUI({
+	selectizeInput("model_use_precheck", "Model Type", choices = model.list(),
 								 multiple=FALSE, selected=model.list()[1])
 		})
 
@@ -285,10 +289,11 @@ output$m11.pred.var.menu <- renderUI({
 
 
 # Default label of forecasted value from settings tab
+# OBSOLETE????
 output$axis.label.sel <- renderUI({
 
 	# changes back when switching tabs?
-	textInput("axis.label", label=h5("Forecasted Variable"), value = axis.label.default() , width = "40%")
+	textInput("axis_label", label=h5("Forecasted Variable"), value = axis.label.default() , width = "40%")
 
 	# dsmr problem
 	#selectInput("axis.label", label = h5("Forecasted Variable"), choices = axis.label.default(),
@@ -302,22 +307,22 @@ output$axis.label.sel <- renderUI({
 
 	precheck.settings  <- reactive({
 
-		print(input$model.use.precheck )
+		print(input$model_use_precheck )
 
 					# extract settings (should streamline)
-				if(input$model.use.precheck  %in% c("TimeSeriesArima","TimeSeriesExpSmooth")){settings.use <- list(BoxCox= input$precheck.boxcox)}
-				if(input$model.use.precheck  %in% c("ReturnRate")){
-								settings.use <- list(avg =  input$rate.avg.precheck,
+				if(input$model_use_precheck  %in% c("TimeSeriesArima","TimeSeriesExpSmooth")){settings.use <- list(BoxCox= input$precheck.boxcox)}
+				if(input$model_use_precheck  %in% c("ReturnRate")){
+								settings.use <- list(avg =  input$rate_avg_precheck,
 																		 pred.label= input$pred.var.precheck,
-																		  last.n= input$last.n.precheck
+																		  last.n= input$last_n_precheck
 																		 )}
-				if(input$model.use.precheck  %in% c("Naive")){settings.use <- list(avg.yrs= input$precheck.avgyrs)}
-				if(input$model.use.precheck  %in% c("SibRegKalman")){settings.use <- list(int.avg= input$precheck.intavg)}
-	    	if(input$model.use.precheck  %in% c("SibRegComplex")){settings.use <- list(tol.AIC= input$precheck.tol.AIC,
+				if(input$model_use_precheck  %in% c("Naive")){settings.use <- list(avg.yrs= input$precheck.avgyrs)}
+				if(input$model_use_precheck  %in% c("SibRegKalman")){settings.use <- list(int.avg= input$precheck.intavg)}
+	    	if(input$model_use_precheck  %in% c("SibRegComplex")){settings.use <- list(tol.AIC= input$precheck.tol.AIC,
 	    																																						 tol.r.sq = input$precheck.tol.r.sq,
 	    																																						 incl.base.eq = FALSE)}
-				if(input$model.use.precheck  %in% c( "SibRegSimple","SibRegLogPower")){settings.use <- NULL}
-				if(input$model.use.precheck  %in% c( "SibRegPooledSimple","SibRegPooledLogPower")){
+				if(input$model_use_precheck  %in% c( "SibRegSimple","SibRegLogPower")){settings.use <- NULL}
+				if(input$model_use_precheck  %in% c( "SibRegPooledSimple","SibRegPooledLogPower")){
 																											settings.use <- list(max.pool = input$precheck.max.pool)}
 				return(settings.use)
 
@@ -330,12 +335,12 @@ output$axis.label.sel <- renderUI({
 
 				print("entering fitModel")
 
-				fit.obj <- fitModel(model= input$model.use.precheck, data = sample.dat$data,
+				fit.obj <- fitModel(model= input$model_use_precheck, data = sample.dat$data,
 														data.sibreg = sample.dat$sibreg.in,
 														settings = settings.use ,tracing=TRUE)
 
 
-				#print(input$model.use.precheck)
+				#print(input$model_use_precheck)
 				#print(sample.dat$data)
 				#print(settings.use)
 				#print("-------------------------------------------")
@@ -404,7 +409,7 @@ output$axis.label.sel <- renderUI({
 
 					boot.int <- doBoot(data= sample.dat,
 														 data.sibreg = sample.dat$sibreg.in,
-														 args.fitmodel= list(model= input$model.use.precheck, settings = settings.use),
+														 args.fitmodel= list(model= input$model_use_precheck, settings = settings.use),
 						args.calcfc = list(fc.yr= settings.basic.use$FCYear,  settings = settings.use),
 						args.boot = list(boot.type=boot.type.in, boot.n=boot.n.in, plot.diagnostics=FALSE),
 						full.out = TRUE, plot.out=FALSE)
@@ -423,7 +428,7 @@ output$axis.label.sel <- renderUI({
 
 					min.retro.yrs <- input$min.retroyrs.explore
 
-					retro.int <- doRetro(model= input$model.use.precheck, data = sample.dat$data,
+					retro.int <- doRetro(model= input$model_use_precheck, data = sample.dat$data,
 															 data.sibreg = sample.dat$sibreg.in,
             predictors =  sample.dat$predictors, covariates = sample.dat$covariates,
 						retro.settings = list(min.yrs=min.retro.yrs),
@@ -498,7 +503,7 @@ output$axis.label.sel <- renderUI({
 
     explore.model.selection <- reactive({
 
-    	if(input$model.use.precheck == 'SibRegComplex'){
+    	if(input$model_use_precheck == 'SibRegComplex'){
     			   	fit.in <- precheck.modelfit()
 							age.in <- input$model.selection.ageclass
 
@@ -511,7 +516,7 @@ output$axis.label.sel <- renderUI({
 											mutate(selected = recode(selected,"FALSE" = "","TRUE" = "X"))
     	}
 
-			if(input$model.use.precheck != 'SibRegComplex'){
+			if(input$model_use_precheck != 'SibRegComplex'){
 				model.selection.df <- data.frame(equ = NA, adj.r.sq = NA,     AIC = NA, diffAIC  = NA,   probAIC = NA )
 			}
 
@@ -556,7 +561,7 @@ output$axis.label.sel <- renderUI({
 
 				age.in <- input$precheck.ageclass
 				plotModelFit(fit.in, options= list(plot.which = "fitted_ts",age.which=age.in,plot.add=FALSE),
-										 axis.label = input$axis.label, fc.add= fc.in ) #,subtitle = fit.in[[age.in]]$formula
+										 axis.label = input$axis_label, fc.add= fc.in ) #,subtitle = fit.in[[age.in]]$formula
 
 
 
@@ -669,7 +674,7 @@ output$axis.label.sel <- renderUI({
 
   output$"downloadPreCheckRep" <- downloadHandler(
     filename = function() {
-      paste(gsub(".csv","",input$file.name.2 ),"_" ,input$model.use.precheck,"_",  gsub(" ","",input$precheck.ageclass),"_",  Sys.Date(), ".pdf", sep="")
+      paste(gsub(".csv","",input$file.name.2 ),"_" ,input$model_use_precheck,"_",  gsub(" ","",input$precheck.ageclass),"_",  Sys.Date(), ".pdf", sep="")
     },
     content = function(file) {
 
@@ -688,7 +693,7 @@ output$axis.label.sel <- renderUI({
 
 		doBoot(data= sample.dat,
 					 data.sibreg = sample.dat$sibreg.in,
-					 args.fitmodel= list(model= input$model.use.precheck, settings = settings.use),
+					 args.fitmodel= list(model= input$model_use_precheck, settings = settings.use),
 					args.calcfc = list(fc.yr= settings.basic.use$FCYear,  settings = settings.use),
 					args.boot = list(boot.type=boot.type.in, boot.n=boot.n.in, plot.diagnostics=FALSE),
 					full.out = FALSE, plot.out=TRUE)

@@ -14,6 +14,7 @@ library("shinydashboard")
 library("shinyjqui")
 library("shinyFiles")
 library("shinybusy")
+library("shinyBS")
 
 
 
@@ -116,13 +117,16 @@ pageWithSidebar(
 #######
 tabPanel("General Settings", value= "general.settings",
 
+
+				  tags$h4("Display Settings"),
+				 textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
+				 bsTooltip("axis_label", "Specify an axis label for the plots. This does not affect any calculations.", 
+				           "right", options = list(container = "body")),
+				 checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE),
+				 numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
+				              value = 0 , min = 0, max = 10, step = 1,   width = "40%"),
 				 tags$h4("Data Treatment Settings"),
-				 	checkboxInput("cov.rescale", label="SibReg Complex: Rescale Covariates?", value = TRUE ),
-				 tags$h4("Display Settings"),
-				 numericInput("table.decimals", label=h5("Number of Decimals shown in tables and figures (NOT YET LINKED)"),
-				 						 value = 0 , min = 0, max = 10, step = 1,   width = "40%"),
-				 textInput("axis.label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
-				 checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE)
+				 checkboxInput("cov_rescale", label="SibReg Complex: Rescale Covariates OBSOLETE? -> VERIFY", value = TRUE )
 				 #uiOutput("axis.label.sel")
 
 ),  # end  general settings panel
@@ -144,29 +148,35 @@ tabPanel("General Settings", value= "general.settings",
 
 	sidebarPanel(
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
-		uiOutput("model.menu.precheck"),
+		uiOutput("model_menu_precheck"),
+		bsTooltip("model_menu_precheck", "Select a type of forecasting model.", 
+		          "right", options = list(container = "body")),
 		tags$hr(style = "border-top: 1px solid #000000;"),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'ReturnRate'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
 										 uiOutput("pred.var.precheck.menu"),
-										 selectizeInput("rate.avg.precheck", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
-										 numericInput("last.n.precheck", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%")
+										 selectizeInput("rate_avg_precheck", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
+										 bsTooltip("rate_avg_precheck", "Return rate models use observed average. Choose the type of average here", 
+										           "right", options = list(container = "body")),
+										 numericInput("last_n_precheck", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
+										 bsPopover("last_n_precheck", title = "Time Window", content = "Use the last n observations to calculate the rate", 
+										           "right", trigger = "hover")
 		), # end conditional panel for return rate
-		conditionalPanel(condition = "input['model.use.precheck'] == 'TimeSeriesArima' || input['model.use.precheck'] == 'TimeSeriesExpSmooth'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'TimeSeriesArima' || input['model_use_precheck'] == 'TimeSeriesExpSmooth'",
 										 uiOutput("boxcox.precheck.menu")
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegKalman'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegKalman'",
 										 uiOutput("intavg.precheck.menu")
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegComplex'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
 										 uiOutput("complex.precheck.menu3"),
 										 uiOutput("complex.precheck.menu1"),
 										 uiOutput("complex.precheck.menu2")
 
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegPooledSimple' || input['model.use.precheck'] == 'SibRegPooledLogPower'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegPooledSimple' || input['model_use_precheck'] == 'SibRegPooledLogPower'",
 										 uiOutput("max.pool.precheck.menu")
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'Naive'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'Naive'",
 										 uiOutput("avgyrs.precheck.menu")
 		),
 
@@ -207,7 +217,7 @@ tabPanel("General Settings", value= "general.settings",
 				  tabPanel("Model-Specific",
 				  				 h4("Only works for Model type = SibRegKalman" , align = "left"),
 				  				 plotOutput("precheck.modeldiagnostic",width = "100%", height = "600px") ),
-				  #conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegComplex'",
+				  #conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
 				  						 tabPanel("Model Selection",
 										  h4("Only works for Model type = SibRegComplex" , align = "left"),
 				  						 				 uiOutput("ages.menu.model.selection"),
