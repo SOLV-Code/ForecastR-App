@@ -212,7 +212,7 @@ output$model_menu_precheck <- renderUI({
 		})
 
 # Predictor Variable List for Explore Tab
-output$pred.var.precheck.menu <- renderUI({
+output$pred_var_precheck_menu <- renderUI({
 	selectInput("pred.var.precheck", label = "Rate: Predictor", choices = predictors.list(),
 							multiple=FALSE,selected = predictors.list()[1] )
 				})
