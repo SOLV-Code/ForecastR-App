@@ -18,6 +18,21 @@ library("shinyBS")
 
 
 
+# part of help button setup (https://stackoverflow.com/a/67302471)
+tags$head(
+  tags$style(".bttn-material-circle.bttn-xs { 
+                            
+                            width: 12px !important; 
+                            height: 12px !important;
+                            font-size: 4px !important;
+                            line-height: 1px !important;
+                            padding: 0px !important;
+
+               }")
+)
+
+
+
 
 # TEMPORARY: NEED THIS HERE UNTIL MODEL SELECTION IS SWITCHED TO DYNAMIC FOR ALL TABS
 model.types <- list("Naive" = "Naive", "Time Series" = c("TimeSeriesArima","TimeSeriesExpSmooth"),
@@ -172,10 +187,16 @@ tabPanel("General Settings", value= "general.settings",
 										 uiOutput("intavg.precheck.menu")
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
-										 uiOutput("complex.precheck.menu3"),
-										 uiOutput("complex.precheck.menu1"),
-										 uiOutput("complex.precheck.menu2")
-
+										 #uiOutput("complex.precheck.menu3"),
+										 tags$h4("Model Selection Tolerance"),
+										 div(style="display:inline-block;width:10%;text-align: center;",uiOutput("complex_precheck_help")),
+										 bsPopover("complex_precheck_help", title = "Tolerance Settings", content = 
+										             paste("insert some text to explain how AIC and R²",
+										                   "are used to select among candidate models by age class"), 
+										           "right", trigger = "click"),
+										 div(style="display:inline-block;width:30%;text-align: center;",uiOutput("complex.precheck.menu1")),
+										 div(style="display:inline-block;width:30%;text-align: center;",uiOutput("complex.precheck.menu2"))
+										  
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegPooledSimple' || input['model_use_precheck'] == 'SibRegPooledLogPower'",
 										 uiOutput("max.pool.precheck.menu")

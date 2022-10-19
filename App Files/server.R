@@ -262,13 +262,22 @@ output$max.pool.precheck.menu <- renderUI({
 
 # Sibreg Complex: Model selection tolerance settings for Explore Tab
 output$complex.precheck.menu1 <- renderUI({
-	numericInput("precheck.tol.AIC", label=h5("SibReg Complex: Tolerance AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "50%")
+	numericInput("precheck.tol.AIC", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "50%")
 	})
+
 output$complex.precheck.menu2 <- renderUI({
-	numericInput("precheck.tol.r.sq", label=h5("SibReg Complex: Tolerance R2 [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "50%")
+  # HTML(paste0("Label (unit = m",tags$sup("2"), ')')) FOR LATER FORMATTING
+	numericInput("precheck.tol.r.sq", label=h5("R² [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "50%")
 })
 
-
+output$complex_precheck_help <- renderUI({
+  actionButton(inputId = "id_my_button",
+               icon = icon("info"),
+               label="",
+               #size = "xs",
+               style = "material-circle",
+               color = "primary")
+})
 
 
 
