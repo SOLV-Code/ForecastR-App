@@ -241,7 +241,7 @@ output$boxcox.precheck.menu <- renderUI({
 
 
 # Naive: num yrs avg option for Explore Tab
-output$avgyrs.precheck.menu <- renderUI({
+output$avgyrs_precheck_menu <- renderUI({
 	numericInput("precheck.avgyrs", label=h5("Naive: Avg Years"), value = 3 , min = 1, max = 10, step = 1,   width = "50%")
 })
 

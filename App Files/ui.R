@@ -163,7 +163,7 @@ tabPanel("General Settings", value= "general.settings",
 										           "top", trigger = "hover"),
 										 numericInput("last_n_precheck", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
 										 bsPopover("last_n_precheck", title = "Time Window", content = "Use the last n observations to calculate the rate", 
-										           "right", trigger = "click")
+										           "right", trigger = "hover")
 		), # end conditional panel for return rate
 		conditionalPanel(condition = "input['model_use_precheck'] == 'TimeSeriesArima' || input['model_use_precheck'] == 'TimeSeriesExpSmooth'",
 										 uiOutput("boxcox.precheck.menu")
@@ -181,8 +181,10 @@ tabPanel("General Settings", value= "general.settings",
 										 uiOutput("max.pool.precheck.menu")
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'Naive'",
-										 uiOutput("avgyrs.precheck.menu")
-		),
+										 uiOutput("avgyrs_precheck_menu"),
+										 bsPopover("avgyrs_precheck_menu", title = "Avg Years", content = 
+										             paste("Number of years used for the average."), "top", trigger = "hover")
+										 ),
 
 		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
 		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
@@ -223,13 +225,12 @@ tabPanel("General Settings", value= "general.settings",
 				  				 plotOutput("precheck.modeldiagnostic",width = "100%", height = "600px") ),
 				  #conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
 				  						 tabPanel("Model Selection",
-										  h4("Only works for Model type = SibRegComplex" , align = "left"),
+								h4("Only works for Model type = SibRegComplex" , align = "left"),
 				  						 				 uiOutput("ages.menu.model.selection"),
 				  						 				 DT::dataTableOutput("table.explore.model.selection")#,
 				  								 				# downloadButton("download.explore.model.selection","Download")
 				  						 				 )
-				  					#))
-						)),
+				  	)),
   				  tabPanel("Bootstrapped Series",plotOutput("precheck.plot.boots.sample",width = "100%", height = "600px") )
 				  )
 
