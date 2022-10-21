@@ -141,7 +141,7 @@ tabPanel("General Settings", value= "general.settings",
 				 numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
 				              value = 0 , min = 0, max = 10, step = 1,   width = "40%"),
 				 tags$h4("Data Treatment Settings"),
-				 checkboxInput("cov_rescale", label="SibReg Complex: Rescale Covariates OBSOLETE? -> VERIFY", value = TRUE )
+				 checkboxInput("cov_rescale", label="SibReg Complex: Rescale Covariates -> move to complex sib tabs on Explore, compare!", value = TRUE )
 				 #uiOutput("axis.label.sel")
 
 ),  # end  general settings panel
