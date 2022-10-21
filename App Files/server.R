@@ -272,7 +272,7 @@ output$complex.precheck.menu2 <- renderUI({
 
 output$complex_precheck_help <- renderUI({
   actionButton(inputId = "id_my_button",
-               icon = icon("info"),
+               icon = icon("question-circle"),
                label="",
                #size = "xs",
                style = "material-circle",
