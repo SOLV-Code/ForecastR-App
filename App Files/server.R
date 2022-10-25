@@ -204,15 +204,7 @@ axis.label.default <-  reactive({
 ######################################################################
 
 
-output$covar_rescale_help <- renderUI({
-  actionButton(inputId = "covar_recale",
-               #icon = icon("question-circle"),
-               label="?",
-               #size = "xs",
-               style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
-               color = "primary",
-               )
-})
+
 
 
 

@@ -22,8 +22,8 @@ library("shinyBS")
 tags$head(
   tags$style(".bttn-material-circle.bttn-xs { 
                             
-                            width: 12px !important; 
-                            height: 12px !important;
+                            width: 4px !important; 
+                            height: 4px !important;
                             font-size: 4px !important;
                             line-height: 1px !important;
                             padding: 0px !important;
@@ -125,6 +125,24 @@ tabPanel("Data Loading", value = "data.loading",
 
 #######
 tabPanel("Display Settings", value= "display.settings",
+         fluidRow(column(10, div(style="display: inline-block;",tags$h3("All Models")),
+                         div(style="display: inline-block;",actionButton(inputId = "display_settings_help",
+                                                                         #icon = icon("question-circle"),
+                                                                         label="?",
+                                                                         size = "xs",
+                                                                         style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
+                                                                         color = "primary"),
+                             bsPopover("display_settings_help", title = "Settings Used Throughout the App", content = 
+                                         paste("FORECASTED VARIABLE is the label used in plots and tables.",
+                                               "Default value is the generic Abundance.",
+                                               "A common alternative is Terminal Run.",
+                                               "MODEL EQUATIONS can be displayed in result plots or not, depending on the target audience.",
+                                               "NUMBER OF DECIMALS determines the digits after 0 shown in tables. Default is 0, because the response variable in",
+                                               "Chinook salmon forecasting data sets is typically in number of fish."
+                                               ),
+                                       "bottom", trigger = "click"))
+         )),
+         
          textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
          bsTooltip("axis_label", "Specify an axis label for the plots. This does not affect any calculations.", 
                    "right", options = list(container = "body")),
@@ -134,20 +152,29 @@ tabPanel("Display Settings", value= "display.settings",
 ), # end  display settings panel
 
 tabPanel("Data Treatment Settings", value= "data.treatment.settings",  
-         tags$h4("Complex Sibling Model"),
-         #div("insert some text to explain how complex sibreg uses covariates
-         #how the covariate rescaling works, and why the default is TRUE",
-        #     style="display:inline-block;width:50%;text-align: left;"),
-         
+        fluidRow(column(10, div(style="display: inline-block;",tags$h3("Complex Sibling Model")),
+                        div(style="display: inline-block;",actionButton(inputId = "covar_rescale_help",
+                                             #icon = icon("question-circle"),
+                                             label="?",
+                                             size = "xs",
+                                            style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
+                                             color = "primary"),
+              bsPopover("covar_rescale_help", title = "Data Treatment for Complex Sib Reg", content = 
+                                      paste("insert some text to explain how complex sibreg uses covariates",
+                                            ", how the covariate rescaling works, and why the default is TRUE.",
+                                            "Can also include links",a("like this", 
+                                                                       href = "https://academic.oup.com/icesjms/article/79/4/1259/6567589",
+                                                                       target="_blank"),"."),
+                                     "bottom", trigger = "click"))
+              )),
+                                
+         checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE )
+                        
+        #fluidRow(column(12, div(style="display: inline-block;",
+        #      
+        #div(style="display:inline-block;width:30%;text-align: left;",
+        #    ),
         
-        div(style="display:inline-block;width:45px;text-align: left;",uiOutput("covar_rescale_help")),
-         bsPopover("covar_rescale_help", title = "Rescaling Covariates", content = 
-                    paste("insert some text to explain how complex sibreg uses covariates",
-                          ", how the covariate rescaling works, and why the default is TRUE"), 
-                   "right", trigger = "click"),
-        div(style="display:inline-block;width:30%;text-align: left;",
-            checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE ),)
-
 ) # end  data treatment settings panel
 ) # end tabset panel	
 ),  # end  second tab panel
