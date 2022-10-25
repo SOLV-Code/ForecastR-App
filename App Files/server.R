@@ -78,8 +78,8 @@ library("shinyBS")
 			yrs.window <- min(data.use$Run_Year) : max(data.use$Run_Year) # need this for all the other tabs -> just keep all the records
 
 
-			if(!is.null(input$cov.rescale)){
-				if(input$cov.rescale){
+			if(!is.null(input$cov_rescale)){
+				if(input$cov_rescale){
 					cov.idx <- which(grepl("Cov",dimnames(data.use)[[2]]))
 					for(i in cov.idx){
 						data.use[,i] <-   data.use[,i] / max(abs(data.use[,i] ),na.rm=TRUE)
@@ -198,6 +198,25 @@ axis.label.default <-  reactive({
 	})
 
 
+
+######################################################################
+# SETTING UP TAB
+######################################################################
+
+
+output$covar_rescale_help <- renderUI({
+  actionButton(inputId = "covar_recale",
+               #icon = icon("question-circle"),
+               label="?",
+               #size = "xs",
+               style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
+               color = "primary",
+               )
+})
+
+
+
+
 ######################################################################
 # MODEL PRE_CHECK PIECES ("Explore" Tab)
 ######################################################################
@@ -269,6 +288,7 @@ output$complex.precheck.menu2 <- renderUI({
   # HTML(paste0("Label (unit = m",tags$sup("2"), ')')) FOR LATER FORMATTING
 	numericInput("precheck.tol.r.sq", label=h5("R² [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "50%")
 })
+
 
 output$complex_precheck_help <- renderUI({
   actionButton(inputId = "id_my_button",

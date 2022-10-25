@@ -75,23 +75,33 @@ report.type.list <- c("Pdf - Key Plots Only","Pdf - Long","Word - Short","Word -
 
 navbarPage("ForecastR", id = "MainTab",
 
+           
+# First Panel
+           
 
-	 tabPanel("Disclaimer",
+	 tabPanel("Info/Help",
 
-fluidPage(
-
-  titlePanel("Disclaimer"),
-
+tabsetPanel(type = "tabs", 
+	                      
+tabPanel("Disclaimer", 
   fluidRow(
     column(8,
 	  includeMarkdown("Markdown/disclaimer.md")
-    )
-  )
-)
+    ))),	  # end disclaimer
 
+tabPanel("Help",
+    fluidRow(
+             column(8,
+                    includeMarkdown("Markdown/help.md")
+             ))),	  # end help
 
-
-	  ),  # end Help tab panel
+tabPanel("About",
+           fluidRow(
+             column(8,
+                    includeMarkdown("Markdown/about.md")
+             )))	  # end About
+) # end tabsetpanel
+),  # end Help/Info tab panel
 
 
 
@@ -102,7 +112,7 @@ tabPanel("Setting Up", value= "setting.up",
          
 tabsetPanel(type = "tabs", 
 
-            tabPanel("Data Loading", value = "data.loading",
+tabPanel("Data Loading", value = "data.loading",
       fileInput("file.name.2", "Choose CSV File", accept = c("text/csv","text/comma-separated-values,text/plain", ".csv")    ),
       tags$hr() ,
       tags$a("Get Some Sample Data",
@@ -111,48 +121,43 @@ tabsetPanel(type = "tabs",
                                
       div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
           				tableOutput("inputheader.table"),height = "400px",width = "200px")
-          
-          
-#			div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
-#					tableOutput("inputheader.table"),height = "400px",width = "200px")
-
-
-  ))	
-
-
-  ),  # end  second tab panel
-
-
-
-
+  ),
 
 #######
-tabPanel("General Settings", value= "general.settings",
+tabPanel("Display Settings", value= "display.settings",
+         textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
+         bsTooltip("axis_label", "Specify an axis label for the plots. This does not affect any calculations.", 
+                   "right", options = list(container = "body")),
+         checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE),
+         numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
+                      value = 0 , min = 0, max = 10, step = 1,   width = "40%")
+), # end  display settings panel
 
+tabPanel("Data Treatment Settings", value= "data.treatment.settings",  
+         tags$h4("Complex Sibling Model"),
+         #div("insert some text to explain how complex sibreg uses covariates
+         #how the covariate rescaling works, and why the default is TRUE",
+        #     style="display:inline-block;width:50%;text-align: left;"),
+         
+        
+        div(style="display:inline-block;width:45px;text-align: left;",uiOutput("covar_rescale_help")),
+         bsPopover("covar_rescale_help", title = "Rescaling Covariates", content = 
+                    paste("insert some text to explain how complex sibreg uses covariates",
+                          ", how the covariate rescaling works, and why the default is TRUE"), 
+                   "right", trigger = "click"),
+        div(style="display:inline-block;width:30%;text-align: left;",
+            checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE ),)
 
-				  tags$h4("Display Settings"),
-				 textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
-				 bsTooltip("axis_label", "Specify an axis label for the plots. This does not affect any calculations.", 
-				           "right", options = list(container = "body")),
-				 checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE),
-				 numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
-				              value = 0 , min = 0, max = 10, step = 1,   width = "40%"),
-				 tags$h4("Data Treatment Settings"),
-				 checkboxInput("cov_rescale", label="SibReg Complex: Rescale Covariates -> move to complex sib tabs on Explore, compare!", value = TRUE )
-				 #uiOutput("axis.label.sel")
-
-),  # end  general settings panel
-
-
-
-
+) # end  data treatment settings panel
+) # end tabset panel	
+),  # end  second tab panel
 
 
 
 #################### MODEL PRE CHECK ######################################
 
 
-    tabPanel("Explore", value= "precheck",
+    tabPanel("Explore FC", value= "precheck",
 
              
 	pageWithSidebar(
@@ -272,7 +277,7 @@ tabPanel("General Settings", value= "general.settings",
 
 
 
-	 tabPanel("Compare" , value= "compare",
+	 tabPanel("Compare FC" , value= "compare",
 
 	pageWithSidebar(
 	headerPanel("Compare Models"),
@@ -521,7 +526,7 @@ tabPanel("General Settings", value= "general.settings",
 
 		) #end page with side bar for model comparison
 
-	),
+	)
 
 
 ######### CUSTOM REPORTS	#############
@@ -532,39 +537,7 @@ tabPanel("General Settings", value= "general.settings",
 
 
 
-####################################
 
-
-	 tabPanel("Help",  value= "help.panel",
-
-fluidPage(
-
-  titlePanel("Help Page"),
-
-  fluidRow(
-    column(8,
-	  includeMarkdown("Markdown/help.md")
-    )
-  )
-)
-
-
-
-	  ),  # end Help tab panel
-
-	tabPanel("About",
-
-fluidPage(
-
-  titlePanel("About ForecastR"),
-
-  fluidRow(
-    column(8,
-      includeMarkdown("Markdown/about.md")
-    )
-  )
-)
-	  )  # end about tab panel
 
 
 
