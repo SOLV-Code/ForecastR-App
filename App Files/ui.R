@@ -97,32 +97,29 @@ fluidPage(
 
 
 #######
- tabPanel("Data Loading", value= "data.loading",
+          
+tabPanel("Setting Up", value= "setting.up",
+         
+tabsetPanel(type = "tabs", 
 
-pageWithSidebar(
-  headerPanel("Data Loading"),
-
-  sidebarPanel(
-			  tags$h4("Data File"),
-			  tags$hr(),
-			  #shinyFilesButton(id="file.name.2", label="File select", title="Please select a file", multiple=FALSE)	,
-			  fileInput("file.name.2", "Choose CSV File", accept = c("text/csv","text/comma-separated-values,text/plain", ".csv")    ),
-			  tags$hr() ,
-			  tags$a("Get Some Sample Data",href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",target="_blank")
-			  #textInput("file.name", "File Name", value = "Data/SampleFile_WithAge.csv", placeholder = "Enter a file name")
-			) # end sidebar
-  ,
-
-
-     mainPanel(
-
-			div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
-					tableOutput("inputheader.table"),height = "400px",width = "200px")
+            tabPanel("Data Loading", value = "data.loading",
+      fileInput("file.name.2", "Choose CSV File", accept = c("text/csv","text/comma-separated-values,text/plain", ".csv")    ),
+      tags$hr() ,
+      tags$a("Get Some Sample Data",
+             href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",
+             target="_blank"),                               
+                               
+      div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
+          				tableOutput("inputheader.table"),height = "400px",width = "200px")
+          
+          
+#			div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
+#					tableOutput("inputheader.table"),height = "400px",width = "200px")
 
 
-		) # end main panel
+  ))	
 
-		) #end page with side bar for  data loading
+
   ),  # end  second tab panel
 
 
