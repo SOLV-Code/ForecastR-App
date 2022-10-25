@@ -14,6 +14,22 @@ library("shinydashboard")
 library("shinyjqui")
 library("shinyFiles")
 library("shinybusy")
+library("shinyBS")
+
+
+
+# part of help button setup (https://stackoverflow.com/a/67302471)
+tags$head(
+  tags$style(".bttn-material-circle.bttn-xs { 
+                            
+                            width: 4px !important; 
+                            height: 4px !important;
+                            font-size: 4px !important;
+                            line-height: 1px !important;
+                            padding: 0px !important;
+
+               }")
+)
 
 
 
@@ -59,84 +75,116 @@ report.type.list <- c("Pdf - Key Plots Only","Pdf - Long","Word - Short","Word -
 
 navbarPage("ForecastR", id = "MainTab",
 
+           
+# First Panel
+           
 
-	 tabPanel("Disclaimer",
+	 tabPanel("Info/Help",
 
-fluidPage(
-
-  titlePanel("Disclaimer"),
-
+tabsetPanel(type = "tabs", 
+	                      
+tabPanel("Disclaimer", 
   fluidRow(
     column(8,
 	  includeMarkdown("Markdown/disclaimer.md")
-    )
-  )
-)
+    ))),	  # end disclaimer
 
+tabPanel("Help",
+    fluidRow(
+             column(8,
+                    includeMarkdown("Markdown/help.md")
+             ))),	  # end help
 
-
-	  ),  # end Help tab panel
-
-
-
-
-#######
- tabPanel("Data Loading", value= "data.loading",
-
-pageWithSidebar(
-  headerPanel("Data Loading"),
-
-  sidebarPanel(
-			  tags$h4("Data File"),
-			  tags$hr(),
-			  #shinyFilesButton(id="file.name.2", label="File select", title="Please select a file", multiple=FALSE)	,
-			  fileInput("file.name.2", "Choose CSV File", accept = c("text/csv","text/comma-separated-values,text/plain", ".csv")    ),
-			  tags$hr() ,
-			  tags$a("Get Some Sample Data",href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",target="_blank")
-			  #textInput("file.name", "File Name", value = "Data/SampleFile_WithAge.csv", placeholder = "Enter a file name")
-			) # end sidebar
-  ,
-
-
-     mainPanel(
-
-			div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
-					tableOutput("inputheader.table"),height = "400px",width = "200px")
-
-
-		) # end main panel
-
-		) #end page with side bar for  data loading
-  ),  # end  second tab panel
-
+tabPanel("About",
+           fluidRow(
+             column(8,
+                    includeMarkdown("Markdown/about.md")
+             )))	  # end About
+) # end tabsetpanel
+),  # end Help/Info tab panel
 
 
 
 
 #######
-tabPanel("General Settings", value= "general.settings",
+          
+tabPanel("Setting Up", value= "setting.up",
+         
+tabsetPanel(type = "tabs", 
 
-				 tags$h4("Data Treatment Settings"),
-				 	checkboxInput("cov.rescale", label="SibReg Complex: Rescale Covariates?", value = TRUE ),
-				 tags$h4("Display Settings"),
-				 numericInput("table.decimals", label=h5("Number of Decimals shown in tables and figures (NOT YET LINKED)"),
-				 						 value = 0 , min = 0, max = 10, step = 1,   width = "40%"),
-				 textInput("axis.label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
-				 checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE)
-				 #uiOutput("axis.label.sel")
+tabPanel("Data Loading", value = "data.loading",
+      fileInput("file.name.2", "Choose CSV File", accept = c("text/csv","text/comma-separated-values,text/plain", ".csv")    ),
+      tags$hr() ,
+      tags$a("Get Some Sample Data",
+             href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",
+             target="_blank"),                               
+                               
+      div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
+          				tableOutput("inputheader.table"),height = "400px",width = "200px")
+  ),
 
-),  # end  general settings panel
+#######
+tabPanel("Display Settings", value= "display.settings",
+         fluidRow(column(10, div(style="display: inline-block;",tags$h3("All Models")),
+                         div(style="display: inline-block;",actionButton(inputId = "display_settings_help",
+                                                                         #icon = icon("question-circle"),
+                                                                         label="?",
+                                                                         size = "xs",
+                                                                         style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
+                                                                         color = "primary"),
+                             bsPopover("display_settings_help", title = "Settings Used Throughout the App", content = 
+                                         paste("FORECASTED VARIABLE is the label used in plots and tables.",
+                                               "Default value is the generic Abundance.",
+                                               "A common alternative is Terminal Run.",
+                                               "MODEL EQUATIONS can be displayed in result plots or not, depending on the target audience.",
+                                               "NUMBER OF DECIMALS determines the digits after 0 shown in tables. Default is 0, because the response variable in",
+                                               "Chinook salmon forecasting data sets is typically in number of fish."
+                                               ),
+                                       "bottom", trigger = "click"))
+         )),
+         
+         textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
+         bsTooltip("axis_label", "Specify an axis label for the plots. This does not affect any calculations.", 
+                   "right", options = list(container = "body")),
+         checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE),
+         numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
+                      value = 0 , min = 0, max = 10, step = 1,   width = "40%")
+), # end  display settings panel
 
-
-
-
+tabPanel("Data Treatment Settings", value= "data.treatment.settings",  
+        fluidRow(column(10, div(style="display: inline-block;",tags$h3("Complex Sibling Model")),
+                        div(style="display: inline-block;",actionButton(inputId = "covar_rescale_help",
+                                             #icon = icon("question-circle"),
+                                             label="?",
+                                             size = "xs",
+                                            style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
+                                             color = "primary"),
+              bsPopover("covar_rescale_help", title = "Data Treatment for Complex Sib Reg", content = 
+                                      paste("insert some text to explain how complex sibreg uses covariates",
+                                            ", how the covariate rescaling works, and why the default is TRUE.",
+                                            "Can also include links",a("like this", 
+                                                                       href = "https://academic.oup.com/icesjms/article/79/4/1259/6567589",
+                                                                       target="_blank"),"."),
+                                     "bottom", trigger = "click"))
+              )),
+                                
+         checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE )
+                        
+        #fluidRow(column(12, div(style="display: inline-block;",
+        #      
+        #div(style="display:inline-block;width:30%;text-align: left;",
+        #    ),
+        
+) # end  data treatment settings panel
+) # end tabset panel	
+),  # end  second tab panel
 
 
 
 #################### MODEL PRE CHECK ######################################
 
 
-    tabPanel("Explore", value= "precheck",
+    tabPanel("Explore FC", value= "precheck",
 
              
 	pageWithSidebar(
@@ -144,31 +192,49 @@ tabPanel("General Settings", value= "general.settings",
 
 	sidebarPanel(
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
-		uiOutput("model.menu.precheck"),
+		uiOutput("model_menu_precheck"),
+		bsTooltip("model_menu_precheck", "Select a type of forecasting model. Available models are determined based on the input data.",
+		          placement = "bottom"),
 		tags$hr(style = "border-top: 1px solid #000000;"),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'ReturnRate'",
-										 uiOutput("pred.var.precheck.menu"),
-										 selectizeInput("rate.avg.precheck", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
-										 numericInput("last.n.precheck", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%")
+		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
+										 uiOutput("pred_var_precheck_menu"),
+										 bsPopover("pred_var_precheck_menu", title = "Predictor Variable", content = 
+										             paste("Candidate variables are determined from the data set, if available."), "top", trigger = "hover"),
+										 selectizeInput("rate_avg_precheck", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
+										 bsPopover("rate_avg_precheck", title = "Type of Average", content = 
+										             paste("Return rate models use observed average. Choose the type of average here.",
+										             "wtmean = weighted arithmentic mean, mean = arithmetic mean, median = median."), 
+										           "top", trigger = "hover"),
+										 numericInput("last_n_precheck", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
+										 bsPopover("last_n_precheck", title = "Time Window", content = "Use the last n observations to calculate the rate", 
+										           "right", trigger = "hover")
 		), # end conditional panel for return rate
-		conditionalPanel(condition = "input['model.use.precheck'] == 'TimeSeriesArima' || input['model.use.precheck'] == 'TimeSeriesExpSmooth'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'TimeSeriesArima' || input['model_use_precheck'] == 'TimeSeriesExpSmooth'",
 										 uiOutput("boxcox.precheck.menu")
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegKalman'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegKalman'",
 										 uiOutput("intavg.precheck.menu")
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegComplex'",
-										 uiOutput("complex.precheck.menu3"),
-										 uiOutput("complex.precheck.menu1"),
-										 uiOutput("complex.precheck.menu2")
-
+		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
+										 #uiOutput("complex.precheck.menu3"),
+										 tags$h4("Model Selection Tolerance"),
+										 div(style="display:inline-block;width:10%;text-align: center;",uiOutput("complex_precheck_help")),
+										 bsPopover("complex_precheck_help", title = "Tolerance Settings", content = 
+										             paste("insert some text to explain how AIC and R²",
+										                   "are used to select among candidate models by age class"), 
+										           "right", trigger = "click"),
+										 div(style="display:inline-block;width:30%;text-align: center;",uiOutput("complex.precheck.menu1")),
+										 div(style="display:inline-block;width:30%;text-align: center;",uiOutput("complex.precheck.menu2"))
+										  
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegPooledSimple' || input['model.use.precheck'] == 'SibRegPooledLogPower'",
+		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegPooledSimple' || input['model_use_precheck'] == 'SibRegPooledLogPower'",
 										 uiOutput("max.pool.precheck.menu")
 		),
-		conditionalPanel(condition = "input['model.use.precheck'] == 'Naive'",
-										 uiOutput("avgyrs.precheck.menu")
-		),
+		conditionalPanel(condition = "input['model_use_precheck'] == 'Naive'",
+										 uiOutput("avgyrs_precheck_menu"),
+										 bsPopover("avgyrs_precheck_menu", title = "Avg Years", content = 
+										             paste("Number of years used for the average."), "top", trigger = "hover")
+										 ),
 
 		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
 		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
@@ -207,15 +273,14 @@ tabPanel("General Settings", value= "general.settings",
 				  tabPanel("Model-Specific",
 				  				 h4("Only works for Model type = SibRegKalman" , align = "left"),
 				  				 plotOutput("precheck.modeldiagnostic",width = "100%", height = "600px") ),
-				  #conditionalPanel(condition = "input['model.use.precheck'] == 'SibRegComplex'",
+				  #conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
 				  						 tabPanel("Model Selection",
-										  h4("Only works for Model type = SibRegComplex" , align = "left"),
+								h4("Only works for Model type = SibRegComplex" , align = "left"),
 				  						 				 uiOutput("ages.menu.model.selection"),
 				  						 				 DT::dataTableOutput("table.explore.model.selection")#,
 				  								 				# downloadButton("download.explore.model.selection","Download")
 				  						 				 )
-				  					#))
-						)),
+				  	)),
   				  tabPanel("Bootstrapped Series",plotOutput("precheck.plot.boots.sample",width = "100%", height = "600px") )
 				  )
 
@@ -239,7 +304,7 @@ tabPanel("General Settings", value= "general.settings",
 
 
 
-	 tabPanel("Compare" , value= "compare",
+	 tabPanel("Compare FC" , value= "compare",
 
 	pageWithSidebar(
 	headerPanel("Compare Models"),
@@ -488,7 +553,7 @@ tabPanel("General Settings", value= "general.settings",
 
 		) #end page with side bar for model comparison
 
-	),
+	)
 
 
 ######### CUSTOM REPORTS	#############
@@ -499,39 +564,7 @@ tabPanel("General Settings", value= "general.settings",
 
 
 
-####################################
 
-
-	 tabPanel("Help",  value= "help.panel",
-
-fluidPage(
-
-  titlePanel("Help Page"),
-
-  fluidRow(
-    column(8,
-	  includeMarkdown("Markdown/help.md")
-    )
-  )
-)
-
-
-
-	  ),  # end Help tab panel
-
-	tabPanel("About",
-
-fluidPage(
-
-  titlePanel("About ForecastR"),
-
-  fluidRow(
-    column(8,
-      includeMarkdown("Markdown/about.md")
-    )
-  )
-)
-	  )  # end about tab panel
 
 
 
