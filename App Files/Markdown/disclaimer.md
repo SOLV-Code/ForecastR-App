@@ -1,4 +1,4 @@
-#### Version 1.1: 2022-02-10
+#### Version 1.2: 2022-11-05
 
 You are working with an update of the first full release of the SalmonForecastR App.
 The ForecastR team is trying to address quirks and bugs

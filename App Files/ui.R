@@ -18,21 +18,6 @@ library("shinyBS")
 
 
 
-# part of help button setup (https://stackoverflow.com/a/67302471)
-tags$head(
-  tags$style(".bttn-material-circle.bttn-xs { 
-                            
-                            width: 4px !important; 
-                            height: 4px !important;
-                            font-size: 4px !important;
-                            line-height: 1px !important;
-                            padding: 0px !important;
-
-               }")
-)
-
-
-
 
 # TEMPORARY: NEED THIS HERE UNTIL MODEL SELECTION IS SWITCHED TO DYNAMIC FOR ALL TABS
 model.types <- list("Naive" = "Naive", "Time Series" = c("TimeSeriesArima","TimeSeriesExpSmooth"),
@@ -113,27 +98,30 @@ tabPanel("Setting Up", value= "setting.up",
 tabsetPanel(type = "tabs", 
 
 tabPanel("Data Loading", value = "data.loading",
-      fileInput("file.name.2", "Choose CSV File", accept = c("text/csv","text/comma-separated-values,text/plain", ".csv")    ),
-      tags$hr() ,
-      tags$a("Get Some Sample Data",
-             href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",
-             target="_blank"),                               
-                               
+      
+      fluidRow(column(10,
+                      div(style="display: inline-block;",
+                          fileInput("file.name.2", "Choose CSV File", 
+                                    accept = c("text/csv","text/comma-separated-values,text/plain", ".csv"))
+                          ,
+                          tags$a("Get Some Sample Data",
+                          href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",
+                          target="_blank"))
+      )),                               
+      hr(),                       
       div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
           				tableOutput("inputheader.table"),height = "400px",width = "200px")
   ),
 
 #######
 tabPanel("Display Settings", value= "display.settings",
-         fluidRow(column(10, div(style="display: inline-block;",tags$h3("All Models")),
-                         div(style="display: inline-block;",actionButton(inputId = "display_settings_help",
-                                                                         #icon = icon("question-circle"),
-                                                                         label="?",
-                                                                         size = "xs",
-                                                                         style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
-                                                                         color = "primary"),
+         fluidRow(column(10, div(style="display: inline-block;", tags$h4("All Models")),
+                            div(style="display: inline-block;",
+                            bsButton(inputId = "display_settings_help", label="?",  size = "extra-small",
+                                           style = "primary", type= "action"),
                              bsPopover("display_settings_help", title = "Settings Used Throughout the App", content = 
                                          paste("FORECASTED VARIABLE is the label used in plots and tables.",
+                                               "This does not affect any calculations.",
                                                "Default value is the generic Abundance.",
                                                "A common alternative is Terminal Run.",
                                                "MODEL EQUATIONS can be displayed in result plots or not, depending on the target audience.",
@@ -144,29 +132,24 @@ tabPanel("Display Settings", value= "display.settings",
          )),
          
          textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
-         bsTooltip("axis_label", "Specify an axis label for the plots. This does not affect any calculations.", 
-                   "right", options = list(container = "body")),
          checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE),
          numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
                       value = 0 , min = 0, max = 10, step = 1,   width = "40%")
 ), # end  display settings panel
 
 tabPanel("Data Treatment Settings", value= "data.treatment.settings",  
-        fluidRow(column(10, div(style="display: inline-block;",tags$h3("Complex Sibling Model")),
-                        div(style="display: inline-block;",actionButton(inputId = "covar_rescale_help",
-                                             #icon = icon("question-circle"),
-                                             label="?",
-                                             size = "xs",
-                                            style = "material-circle;color: #fff; background-color: #337ab7; border-color: #2e6da4;font-weight:bold",
-                                             color = "primary"),
-              bsPopover("covar_rescale_help", title = "Data Treatment for Complex Sib Reg", content = 
-                                      paste("insert some text to explain how complex sibreg uses covariates",
-                                            ", how the covariate rescaling works, and why the default is TRUE.",
-                                            "Can also include links",a("like this", 
-                                                                       href = "https://academic.oup.com/icesjms/article/79/4/1259/6567589",
-                                                                       target="_blank"),"."),
-                                     "bottom", trigger = "click"))
-              )),
+        fluidRow(column(10, div(style="display: inline-block;",tags$h4("Complex Sibling Model")),
+            div(style="display: inline-block;",
+                            bsButton(inputId = "covar_rescale_help", label="?",  size = "extra-small",
+                                     style = "primary", type= "action"),
+                            bsPopover("covar_rescale_help", title = "Data Treatment for Complex Sib Reg", content = 
+                                        paste("insert some text to explain how complex sibreg uses covariates",
+                                              ", how the covariate rescaling works, and why the default is TRUE.",
+                                              "Can also include links",a("like this", 
+                                                                         href = "https://academic.oup.com/icesjms/article/79/4/1259/6567589",
+                                                                         target="_blank"),"."),
+                                      "bottom", trigger = "click")),        
+                                )),
                                 
          checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE )
                         
@@ -190,11 +173,21 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 	pageWithSidebar(
 	headerPanel("Explore Models"),
 
-	sidebarPanel(
+	sidebarPanel(width = 3,
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
+	  
+	  fluidRow(column(10, div(style="display: inline-block;", tags$h4("Model Selection")),
+	                  div(style="display: inline-block;",
+	                      bsButton(inputId = "model_selection_help", label="?",  size = "extra-small",
+	                               style = "primary", type= "action"),
+	                      bsPopover("model_selection_help", title = "Model Types", content = 
+	                                  paste("MODEL TYPE: Select a type of forecasting model.",
+	                                  "Available models are determined based on the input data.",
+	                                  "Model-specific settings will show up below."),
+	                                "bottom", trigger = "click"))
+	  )),
+	  
 		uiOutput("model_menu_precheck"),
-		bsTooltip("model_menu_precheck", "Select a type of forecasting model. Available models are determined based on the input data.",
-		          placement = "bottom"),
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
 										 uiOutput("pred_var_precheck_menu"),
@@ -254,7 +247,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
   ,
 
 
-     mainPanel(
+     mainPanel(width = 9,
 
 
 		 tabsetPanel(type = "tabs",
