@@ -224,7 +224,7 @@ output$model_menu_precheck <- renderUI({
 
 # Predictor Variable List for Explore Tab
 output$pred_var_precheck_menu <- renderUI({
-	selectInput("pred.var.precheck", label = "Rate: Predictor", choices = predictors.list(),
+	selectInput("pred.var.precheck", label = "Predictor", choices = predictors.list(),
 							multiple=FALSE,selected = predictors.list()[1] )
 				})
 
@@ -247,25 +247,25 @@ output$ages.menu.model.selection <- renderUI({
 
 # TS: box cox option for Explore Tab
 output$boxcox.precheck.menu <- renderUI({
-	checkboxInput("precheck.boxcox", label="Time Series: Box-Cox Transform", value = FALSE )
+	checkboxInput("precheck.boxcox", label="Box-Cox Transform", value = FALSE )
 })
 
 
 # Naive: num yrs avg option for Explore Tab
 output$avgyrs_precheck_menu <- renderUI({
-	numericInput("precheck.avgyrs", label=h5("Naive: Avg Years"), value = 3 , min = 1, max = 10, step = 1,   width = "50%")
+	numericInput("precheck.avgyrs", label=h5("Avg Years"), value = 3 , min = 1, max = 10, step = 1,   width = "50%")
 })
 
 
 # Sibreg Kalman: AVG N OPTION for Explore Tab
 output$intavg.precheck.menu <- renderUI({
-	numericInput("precheck.intavg", label=h5("SibReg Kalman: Avg n Est"), value = 5, min = 1, max = 10, step = 1,   width = "50%")
+	numericInput("precheck.intavg", label=h5("Avg n Est"), value = 5, min = 1, max = 10, step = 1,   width = "50%")
 })
 
 
 # Sibreg Pooled Simple: max age classes to pool
 output$max.pool.precheck.menu <- renderUI({
-	numericInput("precheck.max.pool", label=h5("SibReg Pooled (Simple or Log Power): Max cohorts to pool"), value = 3, min = 2, max = 5, step = 1,   width = "50%")
+	numericInput("precheck.max.pool", label=h5("Max Pool"), value = 3, min = 2, max = 5, step = 1,   width = "50%")
 })
 
 
@@ -279,16 +279,6 @@ output$complex.precheck.menu1 <- renderUI({
 output$complex.precheck.menu2 <- renderUI({
   # HTML(paste0("Label (unit = m",tags$sup("2"), ')')) FOR LATER FORMATTING
 	numericInput("precheck.tol.r.sq", label=h5("R² [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "50%")
-})
-
-
-output$complex_precheck_help <- renderUI({
-  actionButton(inputId = "id_my_button",
-               icon = icon("question-circle"),
-               label="",
-               #size = "xs",
-               style = "material-circle",
-               color = "primary")
 })
 
 

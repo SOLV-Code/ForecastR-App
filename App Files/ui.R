@@ -176,57 +176,107 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 	sidebarPanel(width = 3,
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
 	  
-	  fluidRow(column(10, div(style="display: inline-block;", tags$h4("Model Selection")),
+	  fluidRow(div(style="display: inline-block;", tags$h3("Model Selection")),
 	                  div(style="display: inline-block;",
-	                      bsButton(inputId = "model_selection_help", label="?",  size = "extra-small",
+	                      bsButton(inputId = "precheck_model_selection_help", label="?",  size = "extra-small",
 	                               style = "primary", type= "action"),
-	                      bsPopover("model_selection_help", title = "Model Types", content = 
+	                      bsPopover("precheck_model_selection_help", title = "Model Types", content = 
 	                                  paste("MODEL TYPE: Select a type of forecasting model.",
 	                                  "Available models are determined based on the input data.",
 	                                  "Model-specific settings will show up below."),
 	                                "bottom", trigger = "click"))
-	  )),
+	  ),
 	  
 		uiOutput("model_menu_precheck"),
-		tags$hr(style = "border-top: 1px solid #000000;"),
+		#tags$hr(style = "border-top: 1px solid #000000;"),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
-										 uiOutput("pred_var_precheck_menu"),
-										 bsPopover("pred_var_precheck_menu", title = "Predictor Variable", content = 
-										             paste("Candidate variables are determined from the data set, if available."), "top", trigger = "hover"),
-										 selectizeInput("rate_avg_precheck", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
-										 bsPopover("rate_avg_precheck", title = "Type of Average", content = 
-										             paste("Return rate models use observed average. Choose the type of average here.",
-										             "wtmean = weighted arithmentic mean, mean = arithmetic mean, median = median."), 
-										           "top", trigger = "hover"),
-										 numericInput("last_n_precheck", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
-										 bsPopover("last_n_precheck", title = "Time Window", content = "Use the last n observations to calculate the rate", 
-										           "right", trigger = "hover")
+										 
+		                 fluidRow(div(style="display: inline-block;", tags$h4("Return Rate Model")),
+		                          div(style="display: inline-block;",
+		                              bsButton(inputId = "precheck_rate_help", label="?",  size = "extra-small",
+		                                       style = "primary", type= "action"),
+		                              bsPopover("precheck_rate_help", title = "Return Rate Model Settings", content = 
+		                                          paste( "PREDICTOR VARIABLE: Candidate variables are determined from the data set, if available.",
+		                                                 "AVG:", "Return rate models use observed average. Choose the type of average here.",
+		                                                 "wtmean = weighted arithmentic mean, mean = arithmetic mean, median = median.",
+		                                                 "LAST N OBS: Use the last n observations to calculate the rate"),
+		                                        "bottom", trigger = "click"))
+		                 ),
+		                 uiOutput("pred_var_precheck_menu"),
+		                 fluidRow(
+		                div(style="display:inline-block;width:35%",selectizeInput("rate_avg_precheck", "Avg", 
+		                                                                           choices = c("wtmean","mean", "median"), selected="wtmean")),
+		                 div(style="display:inline-block;width:35%",numericInput("last_n_precheck", "Last n obs",  
+		                                        value = 100 , min = 1, max = 100, step = 1)) #,  width = "100%"))
+		                 )
+		                 
 		), # end conditional panel for return rate
 		conditionalPanel(condition = "input['model_use_precheck'] == 'TimeSeriesArima' || input['model_use_precheck'] == 'TimeSeriesExpSmooth'",
-										 uiOutput("boxcox.precheck.menu")
+						fluidRow(div(style="display: inline-block;", tags$h4("Time Series Models")),
+		                          div(style="display: inline-block;",
+		                              bsButton(inputId = "precheck_timeseries_help", label="?",  size = "extra-small",
+		                                       style = "primary", type= "action"),
+		                              bsPopover("precheck_timeseries_help", title = "Time Series Model Settings", content = 
+		                                              paste("BOX-COX TRANSFORM: If selected, data is converted to a more normal distribution of the variance.",
+                                                   "An explanation of the Box-Cox transformation, with an interactive illustration, is available",
+                                                   a("here",href = "https://otexts.com/fpp2/transformations.html", target="_blank"),".")
+                                                   ,
+		                                          "bottom", trigger = "click"),
+		                              )
+		                 ),           
+		                 
+		                 
+		                 
+		                 uiOutput("boxcox.precheck.menu")
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegKalman'",
-										 uiOutput("intavg.precheck.menu")
+		                 fluidRow(div(style="display: inline-block;", tags$h4("Kalman SibReg Models")),
+		                          div(style="display: inline-block;",
+		                              bsButton(inputId = "precheck_sibreg_kalman_help", label="?",  size = "extra-small",
+		                                       style = "primary", type= "action"),
+		                              bsPopover("precheck_sibreg_kalman_help", title = "Kalman SibReg Model Settings", content = 
+		                                          paste("AVG N EST: NEED MORE TEXT."),
+		                                        "bottom", trigger = "click"))
+		                 ),             
+		              uiOutput("intavg.precheck.menu")
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
-										 #uiOutput("complex.precheck.menu3"),
-										 tags$h4("Model Selection Tolerance"),
-										 div(style="display:inline-block;width:10%;text-align: center;",uiOutput("complex_precheck_help")),
-										 bsPopover("complex_precheck_help", title = "Tolerance Settings", content = 
-										             paste("insert some text to explain how AIC and R²",
-										                   "are used to select among candidate models by age class"), 
-										           "right", trigger = "click"),
-										 div(style="display:inline-block;width:30%;text-align: center;",uiOutput("complex.precheck.menu1")),
-										 div(style="display:inline-block;width:30%;text-align: center;",uiOutput("complex.precheck.menu2"))
+									 fluidRow(div(style="display: inline-block;", tags$h4("Complex SibReg Models")),
+										          div(style="display: inline-block;",
+										              bsButton(inputId = "precheck_sibreg_complex_help", label="?",  size = "extra-small",
+										                       style = "primary", type= "action"),
+										              bsPopover("precheck_sibreg_complex_help", title = "Complex SibReg Model Settings", content = 
+										                          paste("insert some text to explain how AIC and R²",
+										                                "are used to select among candidate models by age class"),
+										                        "bottom", trigger = "click"))
+										 ),             
+										 
+										 div(style="display:inline-block;width:45%;text-align: center;",uiOutput("complex.precheck.menu1")),
+										 div(style="display:inline-block;width:45%;text-align: center;",uiOutput("complex.precheck.menu2"))
 										  
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegPooledSimple' || input['model_use_precheck'] == 'SibRegPooledLogPower'",
-										 uiOutput("max.pool.precheck.menu")
+		                 fluidRow(div(style="display: inline-block;", tags$h4("Pooled SibReg Models")),
+		                          div(style="display: inline-block;",
+		                              bsButton(inputId = "precheck_sibreg_pooled_help", label="?",  size = "extra-small",
+		                                       style = "primary", type= "action"),
+		                              bsPopover("precheck_sibreg_pooled_help", title = "Pooled SibReg Model Settings", content = 
+		                                          paste("MAX POOL: Maximum number of cohorts to pool for the model fit. NEED MORE TEXT."),
+		                                        "bottom", trigger = "click"))
+		                 ),
+		                 uiOutput("max.pool.precheck.menu")
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'Naive'",
-										 uiOutput("avgyrs_precheck_menu"),
-										 bsPopover("avgyrs_precheck_menu", title = "Avg Years", content = 
-										             paste("Number of years used for the average."), "top", trigger = "hover")
+		                 
+		                 fluidRow(div(style="display: inline-block;", tags$h4("Naive Model")),
+		                          div(style="display: inline-block;",
+		                              bsButton(inputId = "precheck_naive_help", label="?",  size = "extra-small",
+		                                       style = "primary", type= "action"),
+		                              bsPopover("precheck_naive_help", title = "Naive Model Settings", content = 
+		                                          paste("AVG YEARS: Number of years used for the average."),
+		                                        "bottom", trigger = "click"))
+		                 ),
+										 uiOutput("avgyrs_precheck_menu")
 										 ),
 
 		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
