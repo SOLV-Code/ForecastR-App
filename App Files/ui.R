@@ -310,11 +310,12 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		fluidRow(column(1),
 		         column(5,downloadButton("downloadPreCheckRep", "Download PDf report"))  ),
 		
-		conditionalPanel(condition = "input.explore.diagnostics == 'FitsPointFC' || input.explore.diagnostics == 'Diagnostics'",
+		#conditionalPanel(condition = "input.explore.diagnostics == 'FitsPointFC' || input.explore.diagnostics == 'Diagnostics'",
 		                 tags$hr(style = "border-top: 1px solid #000000;"),
 		                 fluidRow(column(1),
 		                          column(5,uiOutput("ages.menu.precheck"))
-		))
+		#)
+		)
 
 
 		) # end sidebar
