@@ -181,14 +181,16 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 	                      bsButton(inputId = "precheck_model_selection_help", label="?",  size = "extra-small",
 	                               style = "primary", type= "action"),
 	                      bsPopover("precheck_model_selection_help", title = "Model Types", content = 
-	                                  paste("START (Run Year): data subsettig, any records before start year will ve exluded. MODEL TYPE: Select a type of forecasting model.",
+	                                  paste("START (Run Year): data subsettig, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
 	                                  "Available models are determined based on the input data.",
 	                                  "Model-specific settings will show up below."),
 	                                "bottom", trigger = "click"))
 	  ),
-	  
-		uiOutput("model_menu_precheck"),
-		#tags$hr(style = "border-top: 1px solid #000000;"),
+	  #numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
+	  # slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
+	  sliderInput("yr.range.precheck", "Start (Run Years)",sep="",min = 1960, max = 2020, value = 1975,animate=TRUE),
+	  #tags$hr(style = "border-top: 1px solid #000000;"),	  
+		uiOutput("model_menu_precheck"),  # MODEL SELECTION HAPPENS HERE
 		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
 		                          
 		                 fluidRow(div(style="display: inline-block;", tags$h4("Return Rate Model")),
@@ -280,17 +282,6 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                 ),
 										 uiOutput("avgyrs_precheck_menu")
 										 ),
-
-		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
-		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
-		sliderInput("yr.range.precheck", "Start (Run Years)",sep="",min = 1960, max = 2020, value = 1975,animate=TRUE),
-		
-		tags$hr(style = "border-top: 1px solid #000000;"),
-		fluidRow(column(1),
-		         column(5,uiOutput("ages.menu.precheck"))),
-		tags$hr(style = "border-top: 1px solid #000000;"),
-		         fluidRow(column(1),
-		          column(5,downloadButton("downloadPreCheckRep", "Download PDf report"))  ),
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		fluidRow(div(style="display: inline-block;", tags$h3("Forecast Intervals")),
 		         div(style="display: inline-block;",
@@ -311,11 +302,19 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                          column(10,sliderInput("min.retroyrs.explore", "Min Yrs for Retro", sep="",min = 5, max = 35, value = 15,animate=FALSE))
 		                 )),	
 		conditionalPanel(condition = "input['interval.type.precheck'] == 'Bootstrap'",
-		                 column(1),
+		                 fluidRow(column(1),
 		                 column(4,numericInput("boot.n.precheck", "Sample",  value = 100 , min = 10, max = 1000, step = 10,   width = "100%")),
 		                 column(5,selectizeInput("boot.type.precheck", "Type", choices = c("meboot","stlboot"), selected="meboot"))
-		)
-
+		)),
+		fluidRow(column(12,tags$hr(style = "border-top: 1px solid #000000;"))),
+		fluidRow(column(1),
+		         column(5,downloadButton("downloadPreCheckRep", "Download PDf report"))  ),
+		
+		conditionalPanel(condition = "input.explore.diagnostics == 'FitsPointFC' || input.explore.diagnostics == 'Diagnostics'",
+		                 tags$hr(style = "border-top: 1px solid #000000;"),
+		                 fluidRow(column(1),
+		                          column(5,uiOutput("ages.menu.precheck"))
+		))
 
 
 		) # end sidebar
@@ -325,13 +324,14 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
      mainPanel(width = 9,
 
 
-		 tabsetPanel(type = "tabs",
-                  tabPanel("Fits & Point Forecast", plotOutput("precheck.plot.fitandfc",width = "100%", height = "600px")),
-				  tabPanel("Forecast Plot", plotOutput("precheck.plot.intervals",width = "100%", height = "600px")),
-				  tabPanel("Forecast Table",   DT::dataTableOutput("table.explore.fc")#,
+		 tabsetPanel(id = "explore.diagnostics",
+		             type = "tabs",
+          tabPanel("Fits & Point Forecast", value = "FitsPointFC", plotOutput("precheck.plot.fitandfc",width = "100%", height = "600px")),
+				  tabPanel("Forecast Plot", value = "FCPlot",plotOutput("precheck.plot.intervals",width = "100%", height = "600px")),
+				  tabPanel("Forecast Table",  value = "FCTable", DT::dataTableOutput("table.explore.fc")#,
 							#downloadButton("download.table.explore.fc","Download")
 							),
-				tabPanel("Diagnostics",
+				tabPanel("Diagnostics", value = "Diagnostics",
 				tabsetPanel(type = "tabs",
 				  tabPanel("Obs vs. Fitted",plotOutput("precheck.plot.fitvsobs",width = "100%", height = "600px") ),
 				  tabPanel("Residual vs. Fitted",plotOutput("precheck.plot.residvsfitted",width = "100%", height = "600px") ),
@@ -349,7 +349,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 				  								 				# downloadButton("download.explore.model.selection","Download")
 				  						 				 )
 				  	)),
-  				  tabPanel("Bootstrapped Series",plotOutput("precheck.plot.boots.sample",width = "100%", height = "600px") )
+  				  tabPanel("Bootstrapped Series",value = "BootstrapSeries", plotOutput("precheck.plot.boots.sample",width = "100%", height = "600px") )
 				  )
 
 
