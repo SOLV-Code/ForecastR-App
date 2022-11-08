@@ -231,7 +231,7 @@ output$pred_var_precheck_menu <- renderUI({
 
 # Ages List for Explore Tab
 output$ages.menu.precheck <- renderUI({
-	selectizeInput("precheck.ageclass", "Age Class", choices = ages.list(),
+	selectizeInput("precheck.ageclass", "Age Class to Plot", choices = ages.list(),
 								 multiple=FALSE, selected=ages.list()[1])
 })
 

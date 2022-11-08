@@ -181,7 +181,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 	                      bsButton(inputId = "precheck_model_selection_help", label="?",  size = "extra-small",
 	                               style = "primary", type= "action"),
 	                      bsPopover("precheck_model_selection_help", title = "Model Types", content = 
-	                                  paste("MODEL TYPE: Select a type of forecasting model.",
+	                                  paste("START (Run Year): data subsettig, any records before start year will ve exluded. MODEL TYPE: Select a type of forecasting model.",
 	                                  "Available models are determined based on the input data.",
 	                                  "Model-specific settings will show up below."),
 	                                "bottom", trigger = "click"))
@@ -190,25 +190,25 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		uiOutput("model_menu_precheck"),
 		#tags$hr(style = "border-top: 1px solid #000000;"),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
-										 
+		                          
 		                 fluidRow(div(style="display: inline-block;", tags$h4("Return Rate Model")),
 		                          div(style="display: inline-block;",
 		                              bsButton(inputId = "precheck_rate_help", label="?",  size = "extra-small",
-		                                       style = "primary", type= "action"),
-		                              bsPopover("precheck_rate_help", title = "Return Rate Model Settings", content = 
-		                                          paste( "PREDICTOR VARIABLE: Candidate variables are determined from the data set, if available.",
-		                                                 "AVG:", "Return rate models use observed average. Choose the type of average here.",
-		                                                 "wtmean = weighted arithmentic mean, mean = arithmetic mean, median = median.",
-		                                                 "LAST N OBS: Use the last n observations to calculate the rate"),
-		                                        "bottom", trigger = "click"))
+		                                            style = "primary", type= "action"),
+		                                 bsPopover("precheck_rate_help", title = "Return Rate Model Settings", content = 
+		                                             paste( "PREDICTOR VARIABLE: Candidate variables are determined from the data set, if available.",
+		                                                    "AVG:", "Return rate models use observed average. Choose the type of average here.",
+		                                                    "wtmean = weighted arithmentic mean, mean = arithmetic mean, median = median.",
+		                                                    "LAST N OBS: Use the last n observations to calculate the rate"),
+		                                           "bottom", trigger = "click"))
 		                 ),
-		                 uiOutput("pred_var_precheck_menu"),
-		                 fluidRow(
-		                div(style="display:inline-block;width:35%",selectizeInput("rate_avg_precheck", "Avg", 
-		                                                                           choices = c("wtmean","mean", "median"), selected="wtmean")),
-		                 div(style="display:inline-block;width:35%",numericInput("last_n_precheck", "Last n obs",  
-		                                        value = 100 , min = 1, max = 100, step = 1)) #,  width = "100%"))
-		                 )
+		                fluidRow(column(1),column(8,uiOutput("pred_var_precheck_menu"))),
+		                fluidRow(column(1),
+		                         column(4,selectizeInput("rate_avg_precheck", "Avg", 
+		                             choices = c("wtmean","mean", "median"), selected="wtmean")),
+		                          column(4,numericInput("last_n_precheck", "Last n obs",  
+		                            value = 100 , min = 1, max = 100, step = 1)) #,  width = "100%"))		                 
+		                     )
 		                 
 		), # end conditional panel for return rate
 		conditionalPanel(condition = "input['model_use_precheck'] == 'TimeSeriesArima' || input['model_use_precheck'] == 'TimeSeriesExpSmooth'",
@@ -242,17 +242,19 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
 									 fluidRow(div(style="display: inline-block;", tags$h4("Complex SibReg Models")),
-										          div(style="display: inline-block;",
+									 div(style="display: inline-block;", 
 										              bsButton(inputId = "precheck_sibreg_complex_help", label="?",  size = "extra-small",
-										                       style = "primary", type= "action"),
-										              bsPopover("precheck_sibreg_complex_help", title = "Complex SibReg Model Settings", content = 
+										                       style = "primary", type= "action")),
+									         bsPopover("precheck_sibreg_complex_help", title = "Complex SibReg Model Settings", content = 
 										                          paste("insert some text to explain how AIC and R²",
 										                                "are used to select among candidate models by age class"),
-										                        "bottom", trigger = "click"))
+										                        "bottom", trigger = "click")
 										 ),             
-										 
-										 div(style="display:inline-block;width:45%;text-align: center;",uiOutput("complex.precheck.menu1")),
-										 div(style="display:inline-block;width:45%;text-align: center;",uiOutput("complex.precheck.menu2"))
+	          fluidRow(column(1),
+	         column(5,uiOutput("complex.precheck.menu1")),
+	         column(5,uiOutput("complex.precheck.menu2"))   )
+										 #div(style="display:inline-block;width:80%;text-align: center;",uiOutput("complex.precheck.menu1")),
+										 #div(style="display:inline-block;width:80%;text-align: center;",uiOutput("complex.precheck.menu2"))
 										  
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegPooledSimple' || input['model_use_precheck'] == 'SibRegPooledLogPower'",
@@ -281,17 +283,40 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 
 		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
 		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
-		tags$hr(style = "border-top: 1px solid #000000;"),
-		uiOutput("ages.menu.precheck"),
 		sliderInput("yr.range.precheck", "Start (Run Years)",sep="",min = 1960, max = 2020, value = 1975,animate=TRUE),
+		
 		tags$hr(style = "border-top: 1px solid #000000;"),
-		selectizeInput("interval.type.precheck", "Interval Type", choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective"),
-		sliderInput("min.retroyrs.explore", "Min Yrs for Retro", sep="",min = 5, max = 35, value = 15,animate=FALSE),
-		numericInput("boot.n.precheck", "Interval Sample",  value = 100 , min = 10, max = 1000, step = 10,   width = "50%"),
-		selectizeInput("boot.type.precheck", "Bootstrap Type", choices = c("meboot","stlboot"), selected="meboot"),
+		fluidRow(column(1),
+		         column(5,uiOutput("ages.menu.precheck"))),
 		tags$hr(style = "border-top: 1px solid #000000;"),
-		downloadButton("downloadPreCheckRep", "Download PDf report")
-		#actionButton("create.precheck.summary.withoutage", "Create PDF Report")
+		         fluidRow(column(1),
+		          column(5,downloadButton("downloadPreCheckRep", "Download PDf report"))  ),
+		tags$hr(style = "border-top: 1px solid #000000;"),
+		fluidRow(div(style="display: inline-block;", tags$h3("Forecast Intervals")),
+		         div(style="display: inline-block;",
+		             bsButton(inputId = "precheck_interval_help", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("precheck_interval_help", title = "Forecast Intervals", content = 
+		                         paste("Three types of interval are currently available. RETROSPECTIVE uses the distribution or errors from a retrospective test",
+		                         "with a specified mimimum number of observations (i.e. need at least x obs for the first year of the retrospective).",
+		                         "PREDICTION uses the standard deviation of residuals from the model fit.",
+		                         "BOOTSTRAP resamples the data and restimates the forecast for each of n resampled data set"),
+		                       "bottom", trigger = "click"))
+		),
+		fluidRow(column(1),
+		         column(5,selectizeInput("interval.type.precheck", "Interval Type", choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective")),
+		         ),
+		conditionalPanel(condition = "input['interval.type.precheck'] == 'Retrospective'",
+		                 fluidRow(column(1),
+		                          column(10,sliderInput("min.retroyrs.explore", "Min Yrs for Retro", sep="",min = 5, max = 35, value = 15,animate=FALSE))
+		                 )),	
+		conditionalPanel(condition = "input['interval.type.precheck'] == 'Bootstrap'",
+		                 column(1),
+		                 column(4,numericInput("boot.n.precheck", "Sample",  value = 100 , min = 10, max = 1000, step = 10,   width = "100%")),
+		                 column(5,selectizeInput("boot.type.precheck", "Type", choices = c("meboot","stlboot"), selected="meboot"))
+		)
+
+
 
 		) # end sidebar
   ,
