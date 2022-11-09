@@ -176,7 +176,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 	sidebarPanel(width = 3,
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
 	  
-	  fluidRow(div(style="display: inline-block;", tags$h3("Model Selection")),
+	  fluidRow(div(style="display: inline-block;", tags$h3("Model Options")),
 	                  div(style="display: inline-block;",
 	                      bsButton(inputId = "precheck_model_selection_help", label="?",  size = "extra-small",
 	                               style = "primary", type= "action"),
@@ -201,7 +201,9 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                                             paste( "PREDICTOR VARIABLE: Candidate variables are determined from the data set, if available.",
 		                                                    "AVG:", "Return rate models use observed average. Choose the type of average here.",
 		                                                    "wtmean = weighted arithmentic mean, mean = arithmetic mean, median = median.",
-		                                                    "LAST N OBS: Use the last n observations to calculate the rate"),
+		                                                    "LAST N OBS: Use the last n observations to calculate the rate",
+		                                                    a("Return Rate Models Wiki Page",
+		                                                      href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#return-rate-mechanistic-models", target="_blank"),"."),
 		                                           "bottom", trigger = "click"))
 		                 ),
 		                fluidRow(column(1),column(8,uiOutput("pred_var_precheck_menu"))),
@@ -220,8 +222,8 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                                       style = "primary", type= "action"),
 		                              bsPopover("precheck_timeseries_help", title = "Time Series Model Settings", content = 
 		                                              paste("BOX-COX TRANSFORM: If selected, data is converted to a more normal distribution of the variance.",
-                                                   "An explanation of the Box-Cox transformation, with an interactive illustration, is available",
-                                                   a("here",href = "https://otexts.com/fpp2/transformations.html", target="_blank"),".")
+                                                   "For an overview of time series models, including an explanation of the Box-Cox transformation, refer to the",
+                                                   a("Time Series Models Wiki Page",href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#time-series-models", target="_blank"),".")
                                                    ,
 		                                          "bottom", trigger = "click"),
 		                              )
@@ -277,8 +279,10 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                              bsButton(inputId = "precheck_naive_help", label="?",  size = "extra-small",
 		                                       style = "primary", type= "action"),
 		                              bsPopover("precheck_naive_help", title = "Naive Model Settings", content = 
-		                                          paste("AVG YEARS: Number of years used for the average."),
-		                                        "bottom", trigger = "click"))
+		                                          paste("AVG YEARS: Number of years used for the average.",
+                                                    a("Naive Models Wiki Page",
+                                                      href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#naive-models", target="_blank"),"."),       
+		                                            "bottom", trigger = "click"))
 		                 ),
 										 uiOutput("avgyrs_precheck_menu")
 										 ),
