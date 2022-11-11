@@ -183,7 +183,10 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 	                      bsPopover("precheck_model_selection_help", title = "Model Types", content = 
 	                                  paste("START (Run Year): data subsettig, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
 	                                  "Available models are determined based on the input data.",
-	                                  "Model-specific settings will show up below."),
+	                                  "Model-specific settings will show up below.",
+	                                  "For an overview of model types and their data requirements, refer to the",
+	                                  a("Model Types Wiki Page",
+	                                    href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
 	                                "bottom", trigger = "click"))
 	  ),
 	  #numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
@@ -239,7 +242,10 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                              bsButton(inputId = "precheck_sibreg_kalman_help", label="?",  size = "extra-small",
 		                                       style = "primary", type= "action"),
 		                              bsPopover("precheck_sibreg_kalman_help", title = "Kalman SibReg Model Settings", content = 
-		                                          paste("AVG N EST: NEED MORE TEXT."),
+		                                          paste("AVG N EST: NEED MORE TEXT.",
+		                                                "For an overview of Sibling Regression models with time-varying parameters, refer to the",
+		                                                a("Kalman Filter SibReg Wiki Page",
+		                                                  href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#sibling-regressions-with-time-varying-parameters-kalman-filter", target="_blank"),"."),
 		                                        "bottom", trigger = "click"))
 		                 ),             
 		              uiOutput("intavg.precheck.menu")
