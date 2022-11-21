@@ -132,7 +132,7 @@ tabPanel("Display Settings", value= "display.settings",
          )),
          
          textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
-         checkboxInput("show.equ","Show model equations in figures (not linked yet)",value=FALSE),
+         checkboxInput("show.equ","Show model details in figures (equation for complex sibreg, type for time series models, not linked yet)",value=FALSE),
          numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
                       value = 0 , min = 0, max = 10, step = 1,   width = "40%")
 ), # end  display settings panel
