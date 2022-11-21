@@ -11,7 +11,15 @@ Vélez-Espino, L.A., Parken, C.K., Clemons, E.R., Peterson, R., Ryding, K., Folk
 
 ### Project Overview
 
-ForecastR relies on the open-source statistical software R (R Core Team 2018) to generate age-specific (or total abundance) forecasts of salmon escapement or terminal run using a variety of generic models and enabling users to perform interactive tasks with the help of a Graphical User Interface (GUI). These tasks include: (a) the selection of forecasting approaches from a wide set of statistical and/or mechanistic models for forecasting terminal run and escapement ; (b) the selection of several measures of retrospective forecast performance (e.g., MRE, MAE, MAPE, MASE, RMSE); (c) the comparison of forecasting models and model selection and ranking; and, (d) the reporting of forecasting results (point forecasts and interval forecasts) and diagnostics by producing either  detailed reports or executive-summary reports. 
+ForecastR relies on the open-source statistical software R (R Core Team 2018) to generate age-specific (or total abundance) forecasts of salmon escapement or terminal run using a variety of generic models and enabling users to perform interactive tasks with the help of a Graphical User Interface (GUI). These tasks include: 
+
+a) the selection of forecasting approaches from a wide set of statistical and/or mechanistic models for forecasting terminal run and escapement;
+
+b) the selection of several measures of retrospective forecast performance (e.g., MRE, MAE, MAPE, MASE, RMSE); 
+
+c) the comparison of forecasting models and model selection and ranking; and, 
+
+d) the reporting of forecasting results (point forecasts and interval forecasts) and diagnostics by producing either  detailed reports or executive-summary reports. 
 
 The original design of ForecastR involved the generation of age-specific or total-abundance forecasts using several forecasting approaches, including: (i) simple and complex sibling regressions with the ability to include environmental/biological covariates; (ii) time series models such as ARIMA, exponential smoothing, and naïve models (based on any number of preceding years in abundance time series); and (iii) mechanistic models such as average return rate models that depend on auxiliary data such as the number of outmigrant juveniles, the number of hatchery fish released or the number of spawners in previous years. For both age-structured and non-age-structured data, AIC-based model selection takes place within model types (e.g., ARIMA and exponential smoothing) prior to model ranking across model types based on the abovementioned metrics of retrospective evaluation.
 
