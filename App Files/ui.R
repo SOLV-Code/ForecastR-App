@@ -300,6 +300,8 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		             bsPopover("precheck_interval_help", title = "Forecast Intervals", content = 
 		                         paste("Three types of interval are currently available. RETROSPECTIVE uses the distribution or errors from a retrospective test",
 		                         "with a specified mimimum number of observations (i.e. need at least x obs for the first year of the retrospective).",
+		                         "Note that the retrospective interval may be inappropriate for short time series (few values to generate interval) and will cause an error if selected value",
+		                         "exceeds (years - 1) for the oldest age class",
 		                         "PREDICTION uses the standard deviation of residuals from the model fit.",
 		                         "BOOTSTRAP resamples the data and restimates the forecast for each of n resampled data set"),
 		                       "bottom", trigger = "click"))
@@ -309,7 +311,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		         ),
 		conditionalPanel(condition = "input['interval.type.precheck'] == 'Retrospective'",
 		                 fluidRow(column(1),
-		                          column(10,sliderInput("min.retroyrs.explore", "Min Yrs for Retro", sep="",min = 5, max = 35, value = 15,animate=FALSE))
+		                          column(10,sliderInput("min.retroyrs.explore", "Min Yrs for Retro", sep="",min = 10, max = 35, value = 15,animate=FALSE))
 		                 )),	
 		conditionalPanel(condition = "input['interval.type.precheck'] == 'Bootstrap'",
 		                 fluidRow(column(1),
@@ -406,7 +408,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
 		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
 		sliderInput("yr.range.compare", "Start (Run Years)", sep="",min = 1960, max = 2020, value = 1975,animate=FALSE),
-		sliderInput("min.retroyrs.compare", "Min Yrs for Retro", sep="",min = 5, max = 35, value = 15,animate=FALSE),
+		sliderInput("min.retroyrs.compare", "Min Yrs for Retro", sep="",min = 10, max = 35, value = 15,animate=FALSE),
 		checkboxGroupInput("compare.pm", label="Perf. Measures for Model Ranking",
 				choices=c("MRE","MAE","MPE","MAPE","MASE","RMSE")   ,
 					selected = c("MRE","MAE","MPE","MAPE","MASE","RMSE") , inline = TRUE),
