@@ -21,7 +21,8 @@ library("shinyBS")
 
 # TEMPORARY: NEED THIS HERE UNTIL MODEL SELECTION IS SWITCHED TO DYNAMIC FOR ALL TABS
 model.types <- list("Naive" = "Naive", "Time Series" = c("TimeSeriesArima","TimeSeriesExpSmooth"),
-										"Sibling" = c("SibRegSimple","SibRegLogPower", "SibRegKalman","SibRegComplex"),"ReturnRate"="ReturnRate")
+										"Sibling" = c("SibRegSimple","SibRegLogPower", "SibRegKalman","SibRegComplex"),
+										"ReturnRate"="ReturnRate","NoAgeCovar"="NoAgeCovar")
 
 
 

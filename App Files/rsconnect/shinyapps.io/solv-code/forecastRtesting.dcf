@@ -5,7 +5,7 @@ account: solv-code
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 4459895
-bundleId: 6761332
+bundleId: 6761338
 url: https://solv-code.shinyapps.io/forecastRtesting/
-when: 1674413136.58479
-lastSyncTime: 1674413136.60028
+when: 1674413522.52198
+lastSyncTime: 1674413522.52198

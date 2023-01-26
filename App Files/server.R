@@ -150,8 +150,14 @@ model.list <-  reactive({
 																																"SibRegPooledSimple","SibRegPooledLogPower")))}
 
 	cov.check <- sum(grepl("Cov_",names(data.file.tmp))) > 0  # have any covariates in data set?
-	if(cov.check){ 	model.types$Sibling <- c(model.types$Sibling,"SibRegComplex")}
-
+	if(cov.check & age.check ){ 	model.types$Sibling <- c(model.types$Sibling,"SibRegComplex")}
+	
+	
+	if(!age.check & cov.check){ model.types <- c(model.types,list(NoAgeCovar = "NoAgeCovar"))}
+	
+  print("model.types --------------------------")
+	print(model.types)
+	
 	return(model.types)
 	})
 
