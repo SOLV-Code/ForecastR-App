@@ -142,18 +142,23 @@ model.list <-  reactive({
 	# models for all input types
 	model.types <- list("Naive" = "Naive", "Time Series" = c("TimeSeriesArima","TimeSeriesExpSmooth"))
 
-	pred.check <- sum(grepl("Pred_",names(data.file.tmp))) > 0  # have any predictor vars in data set?
-	if(pred.check){ model.types <- c(model.types,list(ReturnRate = "ReturnRate"))}
 
 	age.check <-   length(unique(data.file.tmp$Age_Class)) > 1   # have age classes in the data set?
 	if(age.check){ model.types <- c(model.types,list(Sibling = c("SibRegSimple","SibRegLogPower", "SibRegKalman",
 																																"SibRegPooledSimple","SibRegPooledLogPower")))}
+	
 
 	cov.check <- sum(grepl("Cov_",names(data.file.tmp))) > 0  # have any covariates in data set?
 	if(cov.check & age.check ){ 	model.types$Sibling <- c(model.types$Sibling,"SibRegComplex")}
 	
 	
 	if(!age.check & cov.check){ model.types <- c(model.types,list(NoAgeCovar = "NoAgeCovar"))}
+	
+	
+	pred.check <- sum(grepl("Pred_",names(data.file.tmp))) > 0  # have any predictor vars in data set?
+	if(pred.check & age.check){ model.types <- c(model.types,list(ReturnRate = "ReturnRate"))}
+	
+
 	
   print("model.types --------------------------")
 	print(model.types)
