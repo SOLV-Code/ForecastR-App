@@ -252,6 +252,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		              uiOutput("intavg.precheck.menu")
 		),
 		conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
+		                 # This has the same structure is NoAgeCovar menu (Any fixes need to implemented for both)
 									 fluidRow(div(style="display: inline-block;", tags$h4("Complex SibReg Models")),
 									 div(style="display: inline-block;", 
 										              bsButton(inputId = "precheck_sibreg_complex_help", label="?",  size = "extra-small",
@@ -293,6 +294,24 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                 ),
 										 uiOutput("avgyrs_precheck_menu")
 										 ),
+	#	conditionalPanel(condition = "input['model_use_precheck'] == 'NoAgeCovar'",  
+	#	                 # This has the same structure is Complex Sibreg menu (Any fixes need to implemented for both)
+	#	                 fluidRow(div(style="display: inline-block;", tags$h4("NoAge Covar Models")),
+	#	                          div(style="display: inline-block;", 
+	#	                              bsButton(inputId = "precheck_noagecovar_help", label="?",  size = "extra-small",
+	#	                                       style = "primary", type= "action")),
+	#	                          bsPopover("precheck_noagecovar_help", title = "NoAge Covar Model Settings", content = 
+	#	                                      paste("insert some text to explain how AIC and R²",
+	#	                                            "are used to select among candidate models by age class"),
+	#	                                    "bottom", trigger = "click")
+	#	                 ),             
+	#	                 fluidRow(column(1),
+	#	                          column(5,uiOutput("complex.precheck.menu1")),
+	#	                          column(5,uiOutput("complex.precheck.menu2"))   )
+	#	                 #div(style="display:inline-block;width:80%;text-align: center;",uiOutput("complex.precheck.menu1")),
+	#	                 #div(style="display:inline-block;width:80%;text-align: center;",uiOutput("complex.precheck.menu2"))
+	#	                 
+	#	),
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		fluidRow(div(style="display: inline-block;", tags$h3("Forecast Intervals")),
 		         div(style="display: inline-block;",
