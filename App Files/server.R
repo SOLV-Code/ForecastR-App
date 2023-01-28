@@ -282,7 +282,7 @@ output$max.pool.precheck.menu <- renderUI({
 
 
 
-# Sibreg Complex: Model selection tolerance settings for Explore Tab
+# Sibreg Complex and NoAgeCovar: Model selection tolerance settings for Explore Tab
 output$complex.precheck.menu1 <- renderUI({
 	numericInput("precheck.tol.AIC", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "50%")
 	})
@@ -291,6 +291,11 @@ output$complex.precheck.menu2 <- renderUI({
   # HTML(paste0("Label (unit = m",tags$sup("2"), ')')) FOR LATER FORMATTING
 	numericInput("precheck.tol.r.sq", label=h5("R² [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "50%")
 })
+
+
+
+
+
 
 
 
@@ -346,6 +351,16 @@ output$axis.label.sel <- renderUI({
 				if(input$model_use_precheck  %in% c( "SibRegSimple","SibRegLogPower")){settings.use <- NULL}
 				if(input$model_use_precheck  %in% c( "SibRegPooledSimple","SibRegPooledLogPower")){
 																											settings.use <- list(max.pool = input$precheck.max.pool)}
+	      
+	  	       if(input$model_use_precheck  %in% c("NoAgeCovar")){settings.use <- 	  list(glm.family = "poisson", # pkg function has more options, but for now only this tested
+	                                                                                  tol.AIC = input$precheck.tol.AIC,
+	                                                                                  tol.r.sq = input$precheck.tol.r.sq,
+	                                                                                  base.eq ="Total ~") # pkg function has more options, but for now only this tested
+	                                                                                }
+	  
+
+	  
+	  
 				return(settings.use)
 
 					})

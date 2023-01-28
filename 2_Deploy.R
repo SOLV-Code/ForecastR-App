@@ -1,5 +1,8 @@
 # THIS IS THE SCRIPT PACKS UP THE APP AND SENDS IT TO THE SHINY SERVER
 
+
+
+
 # RESOURCES
 #https://support.rstudio.com/hc/en-us/articles/229848967-Why-does-my-app-work-locally-but-not-on-shinyapps-io-
 
