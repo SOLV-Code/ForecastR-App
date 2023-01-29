@@ -27,6 +27,12 @@ load_or_install(c("meboot","forecast"))
 library("meboot")
 library("forecast")
 
+
+# Need this for noage covar model
+library(ciTools)
+
+
+
 # Think it needs these here for the server deployment
 # These are all shiny specific (not needed in the package)
 load_or_install(c("ggplot2","DT","markdown","rmarkdown","shiny","shinydashboard","shinyjqui","shinyFiles","dplyr"))
@@ -276,15 +282,15 @@ output$intavg.precheck.menu <- renderUI({
 
 # Sibreg Pooled Simple: max age classes to pool
 output$max.pool.precheck.menu <- renderUI({
-	numericInput("precheck.max.pool", label=h5("Max Pool"), value = 3, min = 2, max = 5, step = 1,   width = "50%")
+	numericInput("precheck.max.pool", label=h5("Max Pool"), value = 3, min = 2, max = 5, step = 1,   width = "70%")
 })
 
 
 
 
-# Sibreg Complex and NoAgeCovar: Model selection tolerance settings for Explore Tab
+# Sibreg Complex: Model selection tolerance settings for Explore Tab
 output$complex.precheck.menu1 <- renderUI({
-	numericInput("precheck.tol.AIC", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "50%")
+	numericInput("precheck.tol.AIC", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "70%")
 	})
 
 output$complex.precheck.menu2 <- renderUI({
@@ -293,7 +299,15 @@ output$complex.precheck.menu2 <- renderUI({
 })
 
 
+# NoAgeCOvar: Model selection tolerance settings for Explore Tab (same structure as complex sibreg above)
+output$noagecovar.precheck.menu1 <- renderUI({
+  numericInput("precheck.tol.AIC.noage", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "70%")
+})
 
+output$noagecovar.precheck.menu2 <- renderUI({
+  # HTML(paste0("Label (unit = m",tags$sup("2"), ')')) FOR LATER FORMATTING
+  numericInput("precheck.tol.r.sq.noage", label=h5("R² [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "70%")
+})
 
 
 
@@ -353,8 +367,8 @@ output$axis.label.sel <- renderUI({
 																											settings.use <- list(max.pool = input$precheck.max.pool)}
 	      
 	  	       if(input$model_use_precheck  %in% c("NoAgeCovar")){settings.use <- 	  list(glm.family = "poisson", # pkg function has more options, but for now only this tested
-	                                                                                  tol.AIC = input$precheck.tol.AIC,
-	                                                                                  tol.r.sq = input$precheck.tol.r.sq,
+	                                                                                  tol.AIC = input$precheck.tol.AIC.noage,
+	                                                                                  tol.r.sq = input$precheck.tol.r.sq.noage,
 	                                                                                  base.eq ="Total ~") # pkg function has more options, but for now only this tested
 	                                                                                }
 	  
