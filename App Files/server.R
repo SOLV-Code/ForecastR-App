@@ -60,9 +60,33 @@ library("shinyBS")
 	output$reports.path.use <- renderPrint({   parseDirPath(roots=volumes.use, selection =reports.path.use())  })
 
 
+	
+	########################################				
+	# TESTING CONDITIONAL PANELS		
+		
+	show.tab.test <-  reactive({
+	  
+	test.out <- input$cond.panel.test
 
+	  return(test.out)
+	  
+	})
 
+	observeEvent(show.tab.test(), {
+	 
+	  test.flag <- show.tab.test() 
+	   
+	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "TabTest")}
+	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "TabTest")}
+	  
+	  print(test.flag)
 
+	})
+
+	
+	#########################################################
+	
+	
 	# Read in user-selected input file
     data.file <- reactive({
 		inFile <- input$file.name.2

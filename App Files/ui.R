@@ -432,7 +432,9 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		checkboxGroupInput("compare.pm", label="Perf. Measures for Model Ranking",
 				choices=c("MRE","MAE","MPE","MAPE","MASE","RMSE")   ,
 					selected = c("MRE","MAE","MPE","MAPE","MASE","RMSE") , inline = TRUE),
-		checkboxInput("rel.bol","Use Scaled Ranking",value=FALSE)
+		checkboxInput("rel.bol","Use Scaled Ranking",value=FALSE),
+		checkboxInput("cond.panel.test","Test conditional panel",value=FALSE)
+
 		#downloadButton("downloadComparisonTxt", "x Download text file"),
 		#downloadButton("downloadComparisonCsv", "x Download csv files"),
 		#downloadButton("downloadComparisonRep", "x Download pdf report"),
@@ -445,13 +447,13 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
   ,
 
 
-     mainPanel(
+     mainPanel(id = "CompareMain",
 
 
 		 tabsetPanel(type = "tabs",
 
 				  tabPanel("Settings",
-							tabsetPanel(type = "tabs",
+							tabsetPanel(type = "tabs", id = "CompareModelSettings",
 								tabPanel("N1",
 												 tags$h4("Naive Model"),
 												 tags$h5("All Data Types"),
@@ -475,7 +477,15 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 											  #checkboxInput("m2.boxcox","Box-Cox Transf. - Time Series Models",value=FALSE),
 											  #numericInput("m2.kfyear", label=h5("Avg Years for time-varying par (Kalman Filter Models)"), value = NULL , min = 1, max = 50, step = 1,   width = "40%")
 											  ),
-								tabPanel("TS1",
+				########################################				
+				# TESTING CONDITIONAL PANELS				
+								
+								tabPanel("TabTest",id = "TabTest",tags$h5("Testing"),),
+								
+								
+				####################################				
+								
+							tabPanel("TS1",
 												 tags$h4("Time Series Model"),
 												 tags$h5("All Data Types"),
 												 checkboxInput("m6.use","Include this model",value=TRUE),
@@ -577,8 +587,9 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 											 numericInput("m10.tol.AIC", label=h5("SibReg Complex: Tolerance AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "25%"),
 											 numericInput("m10.tol.r.sq", label=h5("SibReg Complex: Tolerance R2 [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "25%")
 
-											 )
+											 ) #,
 
+							
 
 								 ) # end nested tabsetpanel
 								 ), # end tab panel for settings
