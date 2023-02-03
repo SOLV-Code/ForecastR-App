@@ -63,27 +63,43 @@ library("shinyBS")
 	
 	########################################				
 	# TESTING CONDITIONAL PANELS		
-		
-	show.tab.test <-  reactive({
-	  
-	test.out <- input$cond.panel.test
-
-	  return(test.out)
-	  
-	})
+	
+	
+	# COMPARE TAB: TEST TAB	
+	show.tab.test <-  reactive({ test.out <- input$cond.panel.test; return(test.out)})
 
 	observeEvent(show.tab.test(), {
-	 
 	  test.flag <- show.tab.test() 
-	   
 	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "TabTest")}
 	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "TabTest")}
-	  
-	  print(test.flag)
-
 	})
 
 	
+	# EXPLORE TAB - Model selection diagnostic for SibReg Kalman
+	show.tab.kalman <-  reactive({ 
+	  print("----")
+	  print(input$model_use_precheck)
+	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
+	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck == "SibRegKalman"}
+	  print(test.out)
+	  print("----")	  
+	  return(test.out)})
+	
+	observeEvent(show.tab.kalman(), {
+	  test.flag <- show.tab.kalman() 
+	  print("+-+-+-")
+	  print(test.flag)
+	  print("+-+-+-")
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
+	})
+	
+
+	
+	
+	
+	
+		
 	#########################################################
 	
 	
