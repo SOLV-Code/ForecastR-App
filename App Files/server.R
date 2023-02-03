@@ -75,27 +75,48 @@ library("shinyBS")
 	})
 
 	
-	# EXPLORE TAB - Model selection diagnostic for SibReg Kalman
+	# EXPLORE TAB - Model diagnostic for SibReg Kalman
 	show.tab.kalman <-  reactive({ 
-	  print("----")
-	  print(input$model_use_precheck)
 	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
 	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck == "SibRegKalman"}
-	  print(test.out)
-	  print("----")	  
-	  return(test.out)})
+ 	  return(test.out)})
 	
 	observeEvent(show.tab.kalman(), {
 	  test.flag <- show.tab.kalman() 
-	  print("+-+-+-")
-	  print(test.flag)
-	  print("+-+-+-")
 	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
 	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
 	})
 	
 
+	# EXPLORE TAB - Model selection diagnostic for SibReg Complex
+	show.tab.complexsibreg <-  reactive({ 
+	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
+	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck == "SibRegComplex"}
+	  return(test.out)})
 	
+	observeEvent(show.tab.complexsibreg(), {
+	  test.flag <- show.tab.complexsibreg() 
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Complex SibReg Diagnostic")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Complex SibReg Diagnostic")}
+	})	
+	
+	
+
+	# EXPLORE TAB - bootstrap diagnostics
+	show.tab.boots <-  reactive({ 
+	  if(is.null(input$interval.type.precheck)){test.out <- FALSE}
+	  if(!is.null(input$interval.type.precheck)){test.out <- input$interval.type.precheck == "Bootstrap"}
+	  print("boots tab")
+	  print(test.out)
+	  return(test.out)})
+	
+	observeEvent(show.tab.boots(), {
+	  test.flag <- show.tab.boots() 
+	  print("test.flag")
+	  print(test.flag)
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
+	})	
 	
 	
 	
