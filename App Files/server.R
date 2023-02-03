@@ -63,27 +63,64 @@ library("shinyBS")
 	
 	########################################				
 	# TESTING CONDITIONAL PANELS		
-		
-	show.tab.test <-  reactive({
-	  
-	test.out <- input$cond.panel.test
-
-	  return(test.out)
-	  
-	})
+	
+	
+	# COMPARE TAB: TEST TAB	
+	show.tab.test <-  reactive({ test.out <- input$cond.panel.test; return(test.out)})
 
 	observeEvent(show.tab.test(), {
-	 
 	  test.flag <- show.tab.test() 
-	   
 	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "TabTest")}
 	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "TabTest")}
-	  
-	  print(test.flag)
-
 	})
 
 	
+	# EXPLORE TAB - Model diagnostic for SibReg Kalman
+	show.tab.kalman <-  reactive({ 
+	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
+	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck == "SibRegKalman"}
+ 	  return(test.out)})
+	
+	observeEvent(show.tab.kalman(), {
+	  test.flag <- show.tab.kalman() 
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
+	})
+	
+
+	# EXPLORE TAB - Model selection diagnostic for SibReg Complex
+	show.tab.complexsibreg <-  reactive({ 
+	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
+	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck == "SibRegComplex"}
+	  return(test.out)})
+	
+	observeEvent(show.tab.complexsibreg(), {
+	  test.flag <- show.tab.complexsibreg() 
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Complex SibReg Diagnostic")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Complex SibReg Diagnostic")}
+	})	
+	
+	
+
+	# EXPLORE TAB - bootstrap diagnostics
+	show.tab.boots <-  reactive({ 
+	  if(is.null(input$interval.type.precheck)){test.out <- FALSE}
+	  if(!is.null(input$interval.type.precheck)){test.out <- input$interval.type.precheck == "Bootstrap"}
+	  print("boots tab")
+	  print(test.out)
+	  return(test.out)})
+	
+	observeEvent(show.tab.boots(), {
+	  test.flag <- show.tab.boots() 
+	  print("test.flag")
+	  print(test.flag)
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
+	})	
+	
+	
+	
+		
 	#########################################################
 	
 	

@@ -365,24 +365,25 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 							#downloadButton("download.table.explore.fc","Download")
 							),
 				tabPanel("Diagnostics", value = "Diagnostics",
-				tabsetPanel(type = "tabs",
+				tabsetPanel(id = "DiagnosticsSub",
+				            type = "tabs",
 				  tabPanel("Obs vs. Fitted",plotOutput("precheck.plot.fitvsobs",width = "100%", height = "600px") ),
 				  tabPanel("Residual vs. Fitted",plotOutput("precheck.plot.residvsfitted",width = "100%", height = "600px") ),
 				  tabPanel("Residual Pattern",plotOutput("precheck.plot.resid_ts",width = "100%", height = "600px") ),
-                  tabPanel("Residual Histogram",plotOutput("precheck.plot.resid_hist",width = "100%", height = "600px") ),
+          tabPanel("Residual Histogram",plotOutput("precheck.plot.resid_hist",width = "100%", height = "600px") ),
 				  tabPanel("Residual QQ Norm",plotOutput("precheck.plot.resid_qq",width = "100%", height = "600px") ),
-				  tabPanel("Model-Specific",
-				  				 h4("Only works for Model type = SibRegKalman" , align = "left"),
+				  tabPanel("Kalman Diagnostic",
+				  				 h4("Only applicable for Model type = SibRegKalman" , align = "left"),
 				  				 plotOutput("precheck.modeldiagnostic",width = "100%", height = "600px") ),
-				  #conditionalPanel(condition = "input['model_use_precheck'] == 'SibRegComplex'",
-				  						 tabPanel("Model Selection",
-								h4("Only works for Model type = SibRegComplex" , align = "left"),
+				  tabPanel("Complex SibReg Diagnostic",
+								h4("Only applicable for sibling regression with covariates" , align = "left"),
 				  						 				 uiOutput("ages.menu.model.selection"),
 				  						 				 DT::dataTableOutput("table.explore.model.selection")#,
 				  								 				# downloadButton("download.explore.model.selection","Download")
-				  						 				 )
-				  	)),
-  				  tabPanel("Bootstrapped Series",value = "BootstrapSeries", plotOutput("precheck.plot.boots.sample",width = "100%", height = "600px") )
+				  						 				 ),
+				  tabPanel("Bootstrapped Series",value = "Bootstrapped Series", plotOutput("precheck.plot.boots.sample",width = "100%", height = "600px") )
+				  	))
+  				  
 				  )
 
 
