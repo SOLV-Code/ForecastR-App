@@ -106,14 +106,10 @@ library("shinyBS")
 	show.tab.boots <-  reactive({ 
 	  if(is.null(input$interval.type.precheck)){test.out <- FALSE}
 	  if(!is.null(input$interval.type.precheck)){test.out <- input$interval.type.precheck == "Bootstrap"}
-	  print("boots tab")
-	  print(test.out)
 	  return(test.out)})
 	
 	observeEvent(show.tab.boots(), {
 	  test.flag <- show.tab.boots() 
-	  print("test.flag")
-	  print(test.flag)
 	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
 	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
 	})	
@@ -127,10 +123,15 @@ library("shinyBS")
 	# Read in user-selected input file
     data.file <- reactive({
 		inFile <- input$file.name.2
-		if(is.null(inFile)){ data.use <- matrix(NA,ncol=2,nrow=5)}
-		if(!is.null(inFile)){
+		
+		
+		if(is.null(inFile) & input$data.source == "File"){ data.use <- matrix(NA,ncol=2,nrow=5)}
+		
+		if(!is.null(inFile) | input$data.source != "File"){
 
-			data.file.tmp <- read.csv(inFile$datapath, stringsAsFactors=FALSE)
+		  if(input$data.source == "Sample 1 - Ages"){data.file.tmp <- read.csv("DATA/AgeSampleFile.csv",stringsAsFactors=FALSE)}
+	    if(input$data.source == "Sample 2 - No Ages"){data.file.tmp <- read.csv("DATA/NoAgeSampleFile.csv",stringsAsFactors=FALSE)}
+		  if(input$data.source == "File") {data.file.tmp <- read.csv(inFile$datapath, stringsAsFactors=FALSE)}
 
 
 			# doing this here for now, but it's a kludge -> see https://github.com/avelez-espino/forecastR_phase4/issues/39
