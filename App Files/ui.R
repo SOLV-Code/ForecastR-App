@@ -100,14 +100,20 @@ tabsetPanel(type = "tabs",
 
 tabPanel("Data Loading", value = "data.loading",
       
+         
+      fluidRow(column(10,
+                         div(style="display: inline-block;",
+                             selectizeInput("data.source", "Select Data Source", choices = c("File","Sample 1 - Ages","Sample 2 - No Ages"), selected="File")))),   
+         
       fluidRow(column(10,
                       div(style="display: inline-block;",
                           fileInput("file.name.2", "Choose CSV File", 
                                     accept = c("text/csv","text/comma-separated-values,text/plain", ".csv"))
                           ,
-                          tags$a("Get Some Sample Data",
-                          href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",
-                          target="_blank"))
+                          #tags$a("Get Some Sample Data",
+                          #href="https://www.dropbox.com/sh/7pdqfmvn16v59uk/AAB52T_T8ItI0uEsjyk6PVXxa?dl=0",
+                          #target="_blank")
+                          )
       )),                               
       hr(),                       
       div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
