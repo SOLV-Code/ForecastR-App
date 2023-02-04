@@ -117,7 +117,9 @@ tabPanel("Data Loading", value = "data.loading",
       )),                               
       hr(),                       
       div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
-          				tableOutput("inputheader.table"),height = "400px",width = "200px")
+          	# OLD			tableOutput("inputheader.table"),
+          DT::dataTableOutput("inputheader.table"),
+          height = "400px",width = "200px")
   ),
 
 #######
