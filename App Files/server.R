@@ -62,19 +62,10 @@ library("shinyBS")
 
 	
 	########################################				
-	# TESTING CONDITIONAL PANELS		
+	# CONDITIONAL TAB PANELS		
 	
 	
-	# COMPARE TAB: TEST TAB	
-	show.tab.test <-  reactive({ test.out <- input$cond.panel.test; return(test.out)})
 
-	observeEvent(show.tab.test(), {
-	  test.flag <- show.tab.test() 
-	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "TabTest")}
-	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "TabTest")}
-	})
-
-	
 	# EXPLORE TAB - Model diagnostic for SibReg Kalman
 	show.tab.kalman <-  reactive({ 
 	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
@@ -116,7 +107,65 @@ library("shinyBS")
 	
 	
 	
-		
+	
+	# COMPARE TAB - Sib1, Sib2, Sib3, Sib Cov, Rate Menus
+	
+	show.tab.sibs <-  reactive({ 
+	  data.file.tmp <- data.file()
+	  age.check <-   length(unique(data.file.tmp$Age_Class)) > 1
+	  return(age.check)})
+	
+	
+	show.tab.cov <-  reactive({ 
+	  data.file.tmp <- data.file()
+	  cov.check <-   sum(grepl("Cov_",names(data.file.tmp)))>1
+	  return(cov.check)})	
+	
+	show.tab.rate <-  reactive({ 
+	  data.file.tmp <- data.file()
+	  rate.check <-   sum(grepl("Pred_",names(data.file.tmp)))>1
+	  return(rate.check)})	
+	
+	observeEvent(	show.tab.sibs(), {
+	  test.flag <- 	show.tab.sibs() 
+	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "Sib1")}
+	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "Sib1")}
+	})
+	
+	observeEvent(	show.tab.sibs(), {
+	  test.flag <- 	show.tab.sibs() 
+	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "Sib2")}
+	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "Sib2")}
+	})	
+	
+	
+	observeEvent(	show.tab.sibs(), {
+	  test.flag <- 	show.tab.sibs() 
+	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "Sib3")}
+	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "Sib3")}
+	})	
+	
+	observeEvent(	show.tab.sibs(), {
+	  sib.flag <- 	show.tab.sibs() 
+	  cov.flag <- show.tab.cov()
+	  sibcov.flag <- sib.flag & cov.flag
+	  if(!sibcov.flag ){hideTab(inputId = "CompareModelSettings", target = "SibCov")}
+	  if(sibcov.flag ){showTab(inputId = "CompareModelSettings", target = "SibCov")}
+	})	
+	
+	observeEvent(	show.tab.sibs(), {
+	  sib.flag <- 	show.tab.sibs() 
+	  rate.flag <- show.tab.rate()
+	  sibrate.flag <- sib.flag & rate.flag
+
+	  if(!sibrate.flag ){hideTab(inputId = "CompareModelSettings", target = "Rate")}
+	  if(sibrate.flag ){showTab(inputId = "CompareModelSettings", target = "Rate")}
+	})		
+	
+	
+	
+	
+	
 	#########################################################
 	
 	
@@ -125,7 +174,19 @@ library("shinyBS")
 		inFile <- input$file.name.2
 		
 		
-		if(is.null(inFile) & input$data.source == "File"){ data.use <- matrix(NA,ncol=2,nrow=5)}
+		if(is.null(inFile) & input$data.source == "File"){ 
+		  #data.use <- matrix(NA,ncol=2,nrow=5)
+		  
+		  yrs.vec <- 	1992:2019
+		  n.yrs <- length(yrs.vec)
+		  data.use <- data.frame(Stock_Name	= c("Placeholder",rep(NA,n.yrs-1)),
+		                         Stock_Species	= c("Placeholder",rep(NA,n.yrs-1)),	
+		                         Stock_Abundance	= c("Placeholder",rep(NA,n.yrs-1)),	
+		                         Forecasting_Year = c(2020,rep(NA,n.yrs-1)),
+		                         Run_Year	= 1992:2019,
+                             Average_Escapement = rep(NA, )
+		  )
+		  }
 		
 		if(!is.null(inFile) | input$data.source != "File"){
 
@@ -386,9 +447,19 @@ output$m10.pred.var.menu <- renderUI({
 
 # Predictor Variable List for Compare Tab - Model 11
 output$m11.pred.var.menu <- renderUI({
-	selectInput("m11.pred.var", label = "Predictor", choices = predictors.list(),
-							multiple=FALSE,selected = predictors.list()[1] )
+  selectInput("m11.pred.var", label = "Rate:Predictor", choices = predictors.list(),
+              multiple=FALSE,selected = predictors.list()[1] )
 })
+
+
+# Predictor Variable List for Compare Tab - Model 12
+output$m12.pred.var.menu <- renderUI({
+  selectInput("m12.pred.var", label = "Rate:Predictor", choices = predictors.list(),
+              multiple=FALSE,selected = predictors.list()[1] )
+})
+
+
+
 
 
 # Default label of forecasted value from settings tab
@@ -888,14 +959,28 @@ output$axis.label.sel <- renderUI({
 
 
 
-				# Any Model
-				if(input$m10.use){multifc.list[[input$m10.name]] <-list(model.type= input$m10.modeltype, settings=extractSettings(input$m10.modeltype,input$m10.avgyrs,input$m10.boxcox,input$m10.kfyear,
-																																																													input$m10.max.pool,
-																																																													input$m10.pred.var,input$m10.rate.avg,input$m10.last.n,
-																																																													input$m10.tol.AIC,input$m10.tol.r.sq))}
+				# Any Model (up to 3)
 
+				if(input$m10.use){multifc.list[[input$m10.name]] <-list(model.type= input$m10.modeltype, 
+				                                                        settings=extractSettings(input$m10.modeltype,
+				                                                                  input$m10.avgyrs,input$m10.boxcox,input$m10.kfyear,
+																																					input$m10.max.pool,
+																																					input$m10.pred.var,input$m10.rate.avg,input$m10.last.n,
+																																					input$m10.tol.AIC,input$m10.tol.r.sq))}
 
+			#	if(input$m11.use){multifc.list[[input$m11.name]] <-list(model.type= input$m11.modeltype, 
+			#	                                                        settings=extractSettings(input$m11.modeltype,
+			#	                                                                                 input$m11.avgyrs,input$m11.boxcox,input$m11.kfyear,
+			#	                                                                                 input$m11.max.pool,
+			#	                                                                                 input$m11.pred.var,input$m11.rate.avg,input$m11.last.n,
+			#	                                                                                 input$m11.tol.AIC,input$m11.tol.r.sq))}
 
+			#	if(input$m12.use){multifc.list[[input$m12.name]] <-list(model.type= input$m12.modeltype, 
+			#	                                                        settings=extractSettings(input$m12.modeltype,
+			#	                                                                                 input$m12.avgyrs,input$m12.boxcox,input$m12.kfyear,
+			#	                                                                                 input$m12.max.pool,
+			#	                                                                                 input$m12.pred.var,input$m12.rate.avg,input$m12.last.n,
+			#	                                                                                 input$m12.tol.AIC,input$m12.tol.r.sq))}
 
 
 
