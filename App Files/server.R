@@ -279,7 +279,7 @@ axis.label.default <-  reactive({
 
 
 ######################################################################
-# SETTING UP TAB
+# SETTING UP TAB PIECES
 ######################################################################
 
 
@@ -1504,11 +1504,16 @@ output$axis.label.sel <- renderUI({
 # OTHER STUFF
 ######################################################################
 
-	output$inputheader.table <- renderTable({ data.file() })  # masking issue with package DT? shiny::renderTable doesn't fix it
-					#, options = list(scrollX = TRUE, scrollY = "200px")
+	#output$inputheader.table <- renderTable({ data.file() })  # masking issue with package DT? shiny::renderTable doesn't fix it
+	#				#, options = list(scrollX = TRUE, scrollY = "200px")
 
 
-
+ 	output$inputheader.table <- DT::renderDataTable(
+ 	  DT::datatable(data.file(), extensions = 'Buttons',
+ 	                options = list(paging = FALSE ,
+ 	                               dom = 'Bfrtip',	buttons =  list(
+ 	                                 list(extend = 'csv', filename = "DataFile"))))
+ 	)
 
 
 
