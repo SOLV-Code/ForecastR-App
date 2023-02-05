@@ -3,7 +3,7 @@ This is the forecastR version set up for deployment to shinyapps.io
 
 
 
-The app is available online at https://solv-code.shinyapps.io/harveststrategytypes
+The app is available online at [SOLV server ](https://solv-code.shinyapps.io/forecastr/),[PSC server ](https://psc1.shinyapps.io/ForecastR/)
 
 To run it locally:
 
