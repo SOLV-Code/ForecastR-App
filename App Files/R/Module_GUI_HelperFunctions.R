@@ -17,7 +17,9 @@ max.pool = NULL,tol.AIC = NULL,tol.r.sq = NULL){
     if(model.type %in% c( "SibRegPooledSimple","SibRegPooledLogPower")){ settings.out <- list(max.pool = max.pool) }
 	if(model.type %in% c( "SibRegComplex")){ settings.out <- list(tol.AIC = tol.AIC,tol.r.sq = tol.r.sq,incl.base.eq = FALSE) }
 	if(model.type %in% c( "NoAgeCovar")){ settings.out <- list(glm.family = "poisson", # pkg function has more options, but for now only this tested
-																tol.AIC = tol.AIC,tol.r.sq = tol.r.sq,incl.base.eq = FALSE) }
+																tol.AIC = tol.AIC,tol.r.sq = tol.r.sq,incl.base.eq = FALSE,
+																base.eq ="Total ~") # pkg function has more options, but for now only this tested) 
+																}
 
 #print(settings.out)
 #	stop()
