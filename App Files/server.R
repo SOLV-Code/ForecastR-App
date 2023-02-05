@@ -108,7 +108,7 @@ library("shinyBS")
 	
 	
 	
-	# COMPARE TAB - Sib1, Sib2, Sib3, Sib Cov, Rate Menus
+	# COMPARE TAB - Sib1, Sib2, Sib3, Sib Cov, Rate,  NoAgeCovar  Menus
 	
 	show.tab.sibs <-  reactive({ 
 	  data.file.tmp <- data.file()
@@ -163,7 +163,13 @@ library("shinyBS")
 	})		
 	
 	
-	
+	observeEvent(	show.tab.sibs(), {   
+	  sib.flag <- 	show.tab.sibs() 
+	  cov.flag <- show.tab.cov()
+	  noagecovar.flag <- !sib.flag & cov.flag   # if have no ages, but have covariates
+	  if(!noagecovar.flag ){hideTab(inputId = "CompareModelSettings", target = "NoAgeCovar")}
+	  if(noagecovar.flag ){showTab(inputId = "CompareModelSettings", target = "NoAgeCovar")}
+	})	
 	
 	
 	#########################################################
@@ -434,31 +440,32 @@ output$noagecovar.precheck.menu2 <- renderUI({
 
 
 
-
-
-
-# Predictor Variable List for Compare Tab - Model 10
+# Predictor Variable List for Compare Tab - Model 10 "Any 1"
 output$m10.pred.var.menu <- renderUI({
 	selectInput("m10.pred.var", label = "Rate:Predictor", choices = predictors.list(),
 							multiple=FALSE,selected = predictors.list()[1] )
 })
 
 
-
-# Predictor Variable List for Compare Tab - Model 11
+# Predictor Variable List for Compare Tab - Model 11 "Rate"
 output$m11.pred.var.menu <- renderUI({
   selectInput("m11.pred.var", label = "Rate:Predictor", choices = predictors.list(),
               multiple=FALSE,selected = predictors.list()[1] )
 })
 
 
-# Predictor Variable List for Compare Tab - Model 12
-output$m12.pred.var.menu <- renderUI({
-  selectInput("m12.pred.var", label = "Rate:Predictor", choices = predictors.list(),
+# Predictor Variable List for Compare Tab - Model 13 "Any 2"
+output$m13.pred.var.menu <- renderUI({
+  selectInput("m13.pred.var", label = "Rate:Predictor", choices = predictors.list(),
               multiple=FALSE,selected = predictors.list()[1] )
 })
 
 
+# Predictor Variable List for Compare Tab - Model 14 "Any 3"
+output$m14.pred.var.menu <- renderUI({
+  selectInput("m14.pred.var", label = "Rate:Predictor", choices = predictors.list(),
+              multiple=FALSE,selected = predictors.list()[1] )
+})
 
 
 
@@ -968,21 +975,31 @@ output$axis.label.sel <- renderUI({
 																																					input$m10.pred.var,input$m10.rate.avg,input$m10.last.n,
 																																					input$m10.tol.AIC,input$m10.tol.r.sq))}
 
-			#	if(input$m11.use){multifc.list[[input$m11.name]] <-list(model.type= input$m11.modeltype, 
-			#	                                                        settings=extractSettings(input$m11.modeltype,
-			#	                                                                                 input$m11.avgyrs,input$m11.boxcox,input$m11.kfyear,
-			#	                                                                                 input$m11.max.pool,
-			#	                                                                                 input$m11.pred.var,input$m11.rate.avg,input$m11.last.n,
-			#	                                                                                 input$m11.tol.AIC,input$m11.tol.r.sq))}
 
-			#	if(input$m12.use){multifc.list[[input$m12.name]] <-list(model.type= input$m12.modeltype, 
-			#	                                                        settings=extractSettings(input$m12.modeltype,
-			#	                                                                                 input$m12.avgyrs,input$m12.boxcox,input$m12.kfyear,
-			#	                                                                                 input$m12.max.pool,
-			#	                                                                                 input$m12.pred.var,input$m12.rate.avg,input$m12.last.n,
-			#	                                                                                 input$m12.tol.AIC,input$m12.tol.r.sq))}
-
-
+				if(input$m13.use){multifc.list[[input$m13.name]] <-list(model.type= input$m13.modeltype, 
+				                                                        settings=extractSettings(input$m13.modeltype,
+				                                                                                 input$m13.avgyrs,input$m13.boxcox,input$m13.kfyear,
+				                                                                                 input$m13.max.pool,
+				                                                                                 input$m13.pred.var,input$m13.rate.avg,input$m13.last.n,
+				                                                                                 input$m13.tol.AIC,input$m13.tol.r.sq))}
+				
+				if(input$m14.use){multifc.list[[input$m14.name]] <-list(model.type= input$m14.modeltype, 
+				                                                        settings=extractSettings(input$m14.modeltype,
+				                                                                                 input$m14.avgyrs,input$m14.boxcox,input$m14.kfyear,
+				                                                                                 input$m14.max.pool,
+				                                                                                 input$m14.pred.var,input$m14.rate.avg,input$m14.last.n,
+				                                                                                 input$m14.tol.AIC,input$m14.tol.r.sq))}
+				
+				
+				# NoAge Covar
+				if(input$m15.use){multifc.list[[input$m15.name]] <-list(model.type= input$m15.modeltype,
+				                                                        settings=extractSettings(input$m15.modeltype,input$m15.avgyrs,input$m15.boxcox,input$m15.kfyear,input$m15.max.pool,
+				                                                                                 input$m15.pred.var,input$m15.rate.avg,input$m15.last.n,
+				                                                                                 input$m15.tol.AIC,input$m15.tol.r.sq)) }
+				#print(multifc.list[[input$m12.name]])
+				
+				
+				
 
 				print("multifc.list-------------------------")
 				print(multifc.list)

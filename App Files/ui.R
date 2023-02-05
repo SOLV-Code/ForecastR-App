@@ -555,7 +555,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 											  ),
 								tabPanel("SibCov",
 												 tags$h4("Sibling Regression Model with Covariates"),
-												 tags$h5("Only works if your data has age classes  and covariates ('Pred_XYZ')"),
+												 tags$h5("Only works if your data has age classes  and covariates ('Cov_XYZ')"),
 												 checkboxInput("m12.use","Include this model",value=FALSE),
 												 textInput("m12.name", "Model Label", value = "SibRegComplex", width = "40%"),
 												 selectizeInput("m12.modeltype", "Model Type", choices = c("SibRegComplex"), selected="SibRegComplex", width = "40%"),
@@ -574,7 +574,15 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 												 numericInput("m11.last.n", "Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%")
 								),
 
-
+							tabPanel("NoAgeCovar",
+							         tags$h4("NoAge with Covariates Model"),
+							         tags$h5("Only works if your data has no age classes, but has covariates ('Cov_XYZ')"),
+							         checkboxInput("m15.use","Include this model",value=FALSE),
+							         textInput("m15.name", "Model Label", value = "NoAgeCovar", width = "40%"),
+							         selectizeInput("m15.modeltype", "Model Type", choices = c("NoAgeCovar"), selected="NoAgeCovar", width = "40%"),
+							         numericInput("m15.tol.AIC", label=h5("SibReg Complex: Tolerance AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "25%"),
+							         numericInput("m15.tol.r.sq", label=h5("SibReg Complex: Tolerance R2 [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "25%")
+							),
 							tabPanel("Any 1",checkboxInput("m10.use","Include this model",value=FALSE),
 											  textInput("m10.name", "Model Label", value = NULL, width = "40%"),
 											  selectizeInput("m10.modeltype", "Model Type", choices = model.types, selected=NULL, width = "40%"),
@@ -590,37 +598,40 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 
 											 ) ,
 
-							tabPanel("Any 2", tags$h5("including the rest of this crashes the data input step. How?")
-						#checkboxInput("m11.use","Include this model",value=FALSE),
-						#	         textInput("m11.name", "Model Label", value = NULL, width = "40%"),
-						#	         selectizeInput("m11.modeltype", "Model Type", choices = model.types, selected=NULL, width = "40%"),
-						#	         numericInput("m11.avgyrs", label=h5("Avg Years (Naive Models)"), value = NULL , min = 1, max = 10, step = 1,   width = "40%"),
-						#	         checkboxInput("m11.boxcox","Box-Cox Transf. - Time Series Models",value=FALSE),
-						#	         numericInput("m11.kfyear", label=h5("Avg Years for time-varying par (applies to Sibling Regression with Kalman Filter Models)"),
-						#	                      value = NULL , min = 1, max = 50, step = 1,   width = "40%"),
-						#	         uiOutput("m11.pred.var.menu"),
-						#	         selectizeInput("m11.rate.avg", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
-						#	         numericInput("m11.last.n", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
-						#	         numericInput("m11.tol.AIC", label=h5("SibReg Complex: Tolerance AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "25%"),
-						#	         numericInput("m11.tol.r.sq", label=h5("SibReg Complex: Tolerance R2 [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "25%")
+							
+							tabPanel("Any 2", 
+							         checkboxInput("m13.use","Include this model",value=FALSE),
+							         textInput("m13.name", "Model Label", value = NULL, width = "40%"),
+							         selectizeInput("m13.modeltype", "Model Type", choices = model.types, selected=NULL, width = "40%"),
+							         numericInput("m13.avgyrs", label=h5("Avg Years (Naive Models)"), value = NULL , min = 1, max = 10, step = 1,   width = "40%"),
+							         checkboxInput("m13.boxcox","Box-Cox Transf. - Time Series Models",value=FALSE),
+							         numericInput("m13.kfyear", label=h5("Avg Years for time-varying par (applies to Sibling Regression with Kalman Filter Models)"),
+							                      value = NULL , min = 1, max = 50, step = 1,   width = "40%"),
+							         uiOutput("m13.pred.var.menu"),
+							         selectizeInput("m13.rate.avg", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
+							         numericInput("m13.last.n", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
+							         numericInput("m13.tol.AIC", label=h5("SibReg Complex: Tolerance AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "25%"),
+							         numericInput("m13.tol.r.sq", label=h5("SibReg Complex: Tolerance R2 [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "25%")
 							         
 							) ,
 							
-							tabPanel("Any 3", tags$h5("including the rest of this crashes the data input step. How?")
-						#	         checkboxInput("m12.use","Include this model",value=FALSE),
-						#	         textInput("m12.name", "Model Label", value = NULL, width = "40%"),
-						#	         selectizeInput("m12.modeltype", "Model Type", choices = model.types, selected=NULL, width = "40%"),
-						#	         numericInput("m12.avgyrs", label=h5("Avg Years (Naive Models)"), value = NULL , min = 1, max = 10, step = 1,   width = "40%"),
-						#	         checkboxInput("m12.boxcox","Box-Cox Transf. - Time Series Models",value=FALSE),
-						#	         numericInput("m12.kfyear", label=h5("Avg Years for time-varying par (applies to Sibling Regression with Kalman Filter Models)"),
-						#	                     value = NULL , min = 1, max = 50, step = 1,   width = "40%"),
-						#	         uiOutput("m12.pred.var.menu"),
-						#	         selectizeInput("m12.rate.avg", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
-						#	         numericInput("m12.last.n", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
-						#	         numericInput("m12.tol.AIC", label=h5("SibReg Complex: Tolerance AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "25%"),
-						#	         numericInput("m12.tol.r.sq", label=h5("SibReg Complex: Tolerance R2 [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "25%")
+							tabPanel("Any 3", 
+						checkboxInput("m14.use","Include this model",value=FALSE),
+							         textInput("m14.name", "Model Label", value = NULL, width = "40%"),
+							         selectizeInput("m14.modeltype", "Model Type", choices = model.types, selected=NULL, width = "40%"),
+							         numericInput("m14.avgyrs", label=h5("Avg Years (Naive Models)"), value = NULL , min = 1, max = 10, step = 1,   width = "40%"),
+							         checkboxInput("m14.boxcox","Box-Cox Transf. - Time Series Models",value=FALSE),
+							         numericInput("m14.kfyear", label=h5("Avg Years for time-varying par (applies to Sibling Regression with Kalman Filter Models)"),
+							                      value = NULL , min = 1, max = 50, step = 1,   width = "40%"),
+							         uiOutput("m14.pred.var.menu"),
+							         selectizeInput("m14.rate.avg", "Rate: Avg", choices = c("wtmean","mean", "median"), selected="wtmean"),
+							         numericInput("m14.last.n", "Rate: Last n obs",  value = 100 , min = 1, max = 100, step = 1,   width = "50%"),
+							         numericInput("m14.tol.AIC", label=h5("SibReg Complex: Tolerance AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "25%"),
+							         numericInput("m14.tol.r.sq", label=h5("SibReg Complex: Tolerance R2 [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "25%")
 							         
 							) 
+							
+		
 				
 
 								 ) # end nested tabsetpanel
