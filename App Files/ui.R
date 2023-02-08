@@ -168,12 +168,12 @@ tabPanel("Display Settings", value= "display.settings",
 ), # end  display settings panel
 
 tabPanel("Data Treatment Settings", value= "data.treatment.settings",  
-        fluidRow(column(10, div(style="display: inline-block;",tags$h4("Complex Sibling Model")),
+        fluidRow(column(10, div(style="display: inline-block;",tags$h4("Covariate Models: Complex Sibling Regressions, NoAge Covar")),
             div(style="display: inline-block;",
                             bsButton(inputId = "covar_rescale_help", label="?",  size = "extra-small",
                                      style = "primary", type= "action"),
-                            bsPopover("covar_rescale_help", title = "Data Treatment for Complex Sib Reg", content = 
-                                        paste("insert some text to explain how complex sibreg uses covariates",
+                            bsPopover("covar_rescale_help", title = "Data Treatment for Covariate Models", content = 
+                                        paste("insert some text to explain how these models use covariates",
                                               ", how the covariate rescaling works, and why the default is TRUE.",
                                               "Can also include links",a("like this", 
                                                                          href = "https://academic.oup.com/icesjms/article/79/4/1259/6567589",

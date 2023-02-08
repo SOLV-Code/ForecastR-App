@@ -701,7 +701,10 @@ output$axis.label.sel <- renderUI({
 							age.in <- input$model.selection.ageclass
 
 							print("--X---")
+							print(age.in)
 							print(names(fit.in[[age.in]]))
+							
+							if(age.in == "Not Applicable"){age.in <- "Total"}
 
 							model.selection.df <- fit.in[[age.in]][["model.selection"]] %>%
 											select(equ,numCoeff,rankAIC, rankRsq,selected) %>%
@@ -1240,7 +1243,7 @@ output$axis.label.sel <- renderUI({
 					axis(2,at=n.models:1,labels=paste0(table.use$Model," (",table.use$RankByAge,")"),las=2,cex.axis=1.1)
 					axis(1)
 					
-				#	legend("topleft",legend = c("Point Forecast","Median of Interval"), pch = c(19,4),col="red")
+					legend("topleft",legend = c("Point Forecast","Median of Interval"), pch = c(19,4),col="red",pt.cex = 1.7, cex=1.3,bty="n")
 
 
 			})
