@@ -1,12 +1,12 @@
-#### Version 1.3: 2023-01-22
+#### Version 2.0: 2023-02-12
 
-You are working with an update of the first full release of the SalmonForecastR App.
+You are working with the *second* full release of the SalmonForecastR App.
 The ForecastR team is trying to address quirks and bugs
 as they are found by users like you. 
 
 To check a list of know bugs/issues with this prototype, 
 and to add any new bugs/issues with this prototype,
-go to **[this github thread](https://github.com/SalmonForecastR/ForecastR-Releases/issues/1)**
+go to **[this github thread](https://github.com/SalmonForecastR/ForecastR-Releases/issues/6)**
 
 For more information about the app, check the *Help* and *About* tabs.
 
@@ -21,13 +21,32 @@ can't decide which candidate models make sense for your data set, and which cand
 most appropriate. The design focus has been on automating the number-crunching steps to free up 
 analysts' time for exploration and interpretation.
 
-
-
-
-
-
-
 **What's New?**
+
+
+*Version 2: 2023 Update --------------------------------------------*
+
+This round of work focused on improving the user experience, but we
+also added a new type of forecasting model to both the R package and the app:
+
+* *NoAgeCovar*: For data sets without age classes (e.g., only have total run or escapement) that have covariates,
+fit generalized linear models (GLM) and select the best combination of covariates.
+
+App improvements since the last major release include:
+
+* *dynamic interfaces*
+   - model-specific menus for settings
+   - model-specific diagnostics
+   - data-specific model selections (e.g. on the model selections for comparing and ranking)
+* *Tooltips*: click on/off to display short clarifications for app components, some with links to further information.
+* *Sample data*: sample data sets are now integrated into the app and can be selected from drop down menu
+* *Increased the number of models that can be compared*
+
+
+
+
+
+*Version 1: 2021 Release --------------------------------------------*
 
 Since the last major release in the spring of 2019,
 the following key updates have been implemented:

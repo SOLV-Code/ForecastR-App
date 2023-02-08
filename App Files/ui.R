@@ -100,14 +100,35 @@ tabsetPanel(type = "tabs",
 
 tabPanel("Data Loading", value = "data.loading",
       
+         fluidRow(column(10, div(style="display: inline-block;", tags$h4("Data Source")),
+                         div(style="display: inline-block;",
+                             bsButton(inputId = "data_loading_help", label="?",  size = "extra-small",
+                                      style = "primary", type= "action"),
+                             bsPopover("data_loading_help", title = "Data Sources", content = 
+                                         paste("You can select one of the sample data files",
+                                               "or load your own csv file. Sample data files",
+                                               "either have age-specific data or not,",
+                                               "and either have covariates or not. You can download",
+                                               "a sample data file by clicking csv after selecting it.",
+                                               "The quickest way to create your own input files is",
+                                               "to download a sample file with the same data structure and",
+                                               "then populate that."
+                                               ),
+                                       "bottom", trigger = "click"))
+         )),   
          
+              
       fluidRow(column(10,
                          div(style="display: inline-block;",
-                             selectizeInput("data.source", "Select Data Source", choices = c("File","Sample 1 - Ages","Sample 2 - No Ages"), selected="File")))),   
+                             selectizeInput("data.source", "Select Data Source", choices = c("My File","Sample 1 - Ages With Covariates",
+                                                                                             "Sample 2 - No Ages with Covariates",
+                                                                                             "Sample 3 - Ages, No Covariates",
+                                                                                             "Sample 4 - No Ages, No Covariates"
+                                                                                                                                                                                          ), selected="File")))),   
          
       fluidRow(column(10,
                       div(style="display: inline-block;",
-                          fileInput("file.name.2", "Choose CSV File", 
+                          fileInput("file.name.2", "Choose CSV File (if selecting  'My File' above)", 
                                     accept = c("text/csv","text/comma-separated-values,text/plain", ".csv"))
                           ,
                           #tags$a("Get Some Sample Data",
@@ -140,10 +161,10 @@ tabPanel("Display Settings", value= "display.settings",
                                        "bottom", trigger = "click"))
          )),
          
-         textInput("axis_label", label=h5("Forecasted Variable"), value = "Abundance", width = "40%"),
-         checkboxInput("show.equ","Show model details in figures (equation for complex sibreg, type for time series models, not linked yet)",value=FALSE),
-         numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
-                      value = 0 , min = 0, max = 10, step = 1,   width = "40%")
+         textInput("axis_label", label=h5("Label for Forecasted Variable"), value = "Abundance", width = "40%") #,
+        # checkboxInput("show.equ","Show model details in figures (equation for complex sibreg, type for time series models, not linked yet)",value=FALSE),
+        # numericInput("table_decimals", label=h5("Number of decimals shown in tables and figures (NOT YET LINKED)"),
+        #              value = 0 , min = 0, max = 10, step = 1,   width = "40%")
 ), # end  display settings panel
 
 tabPanel("Data Treatment Settings", value= "data.treatment.settings",  
@@ -346,6 +367,12 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                 column(4,numericInput("boot.n.precheck", "Sample",  value = 100 , min = 10, max = 1000, step = 10,   width = "100%")),
 		                 column(5,selectizeInput("boot.type.precheck", "Type", choices = c("meboot","stlboot"), selected="meboot"))
 		)),
+		conditionalPanel(condition = "input['interval.type.precheck'] == 'Prediction' & input['model_use_precheck'] == 'NoAgeCovar'",  
+		                 fluidRow(div(style="display: inline-block; color: red", tags$i("NOTE: Prediction intervals for NoAge Covar Models are unrealistically narrow at the moment. 
+		                                                                      Calculations and code implementation are under review. For now, use one of the other intervals for this model.")) )),
+		
+		
+		
 		fluidRow(column(12,tags$hr(style = "border-top: 1px solid #000000;"))),
 		fluidRow(column(1),
 		         column(5,downloadButton("downloadPreCheckRep", "Download PDf report"))  ),
@@ -383,8 +410,8 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 				  tabPanel("Kalman Diagnostic",
 				  				 h4("Only applicable for Model type = SibRegKalman" , align = "left"),
 				  				 plotOutput("precheck.modeldiagnostic",width = "100%", height = "600px") ),
-				  tabPanel("Complex SibReg Diagnostic",
-								h4("Only applicable for sibling regression with covariates" , align = "left"),
+				  tabPanel("Covar Model Diagnostic",
+								h4("Only applicable for models with covariates" , align = "left"),
 				  						 				 uiOutput("ages.menu.model.selection"),
 				  						 				 DT::dataTableOutput("table.explore.model.selection")#,
 				  								 				# downloadButton("download.explore.model.selection","Download")
@@ -428,8 +455,6 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		#actionButton("resetmodel.compare", "x Reset Models"),
 		add_busy_spinner(spin = "fading-circle"),
 		tags$p("Note: Running a new batch of models takes a little time"),
-		selectizeInput("compare.ageclass", "Age Class", choices = ages.menu.list.multi, selected=ages.menu.list[1]),
-		selectizeInput("compare.plotsort", "Sort Plot By", choices = c("AvgRank","Forecast"), selected="AvgRank"),
 		selectizeInput("retrotype.compare", "Performance Measure Type", choices = retro.types, selected=retro.types[1]),
 		selectizeInput("interval.type.compare", "Interval Type", choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective"),
 		numericInput("boot.n.compare", "Interval Sample",  value = 100 , min = 10, max = 1000, step = 10,   width = "50%"),
@@ -650,8 +675,13 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 							),
 				 # tabPanel("x Pt FC w/ Best Models",  DT::dataTableOutput("table.bestmodel.fc")) ,
 				  #tabPanel("x Bootstrap",  DT::dataTableOutput("table.bestmodel.fc.boot"))
+	
 				tabPanel("FC Plot - By Age",
-									h2(textOutput("compare.ageclass"), align = "center"),
+				         fluidRow(column(1),
+				                  column(4,selectizeInput("compare.ageclass", "Age Class", choices = ages.menu.list.multi, selected=ages.menu.list[1])),
+				                  column(4,selectizeInput("compare.plotsort", "Sort Plot By", choices = c("AvgRank","Forecast"), selected="AvgRank"))		                 
+				         )       ,
+				      		h2(textOutput("compare.ageclass"), align = "center"),
 									plotOutput("compare.ptfc",width = "100%", height = "600px")	),
 
 				tabPanel("Ranking Details",
