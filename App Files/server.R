@@ -79,16 +79,16 @@ library("shinyBS")
 	})
 	
 
-	# EXPLORE TAB - Model selection diagnostic for SibReg Complex
+	# EXPLORE TAB - Model selection diagnostic for Covariate Models
 	show.tab.complexsibreg <-  reactive({ 
 	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
-	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck == "SibRegComplex"}
+	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck %in% c("SibRegComplex","NoAgeCovar")}
 	  return(test.out)})
 	
 	observeEvent(show.tab.complexsibreg(), {
 	  test.flag <- show.tab.complexsibreg() 
-	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Complex SibReg Diagnostic")}
-	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Complex SibReg Diagnostic")}
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Covar Model Diagnostic")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Covar Model Diagnostic")}
 	})	
 	
 	
@@ -180,7 +180,7 @@ library("shinyBS")
 		inFile <- input$file.name.2
 		
 		
-		if(is.null(inFile) & input$data.source == "File"){ 
+		if(is.null(inFile) & input$data.source == "My File"){ 
 		  #data.use <- matrix(NA,ncol=2,nrow=5)
 		  
 		  yrs.vec <- 	1992:2019
@@ -194,11 +194,14 @@ library("shinyBS")
 		  )
 		  }
 		
-		if(!is.null(inFile) | input$data.source != "File"){
+		if(!is.null(inFile) | input$data.source != "My File"){
 
-		  if(input$data.source == "Sample 1 - Ages"){data.file.tmp <- read.csv("DATA/AgeSampleFile.csv",stringsAsFactors=FALSE)}
-	    if(input$data.source == "Sample 2 - No Ages"){data.file.tmp <- read.csv("DATA/NoAgeSampleFile.csv",stringsAsFactors=FALSE)}
-		  if(input$data.source == "File") {data.file.tmp <- read.csv(inFile$datapath, stringsAsFactors=FALSE)}
+		  if(input$data.source == "Sample 1 - Ages With Covariates"){data.file.tmp <- read.csv("DATA/AgeSampleFile.csv",stringsAsFactors=FALSE)}
+	    if(input$data.source == "Sample 2 - No Ages with Covariates"){data.file.tmp <- read.csv("DATA/NoAgeSampleFile.csv",stringsAsFactors=FALSE)}
+		  if(input$data.source == "Sample 3 - Ages, No Covariates"){data.file.tmp <- read.csv("DATA/AgeSampleFile_NoCovar.csv",stringsAsFactors=FALSE)}
+		  if(input$data.source == "Sample 4 - No Ages, No Covariates"){data.file.tmp <- read.csv("DATA/NoAgeSampleFile_NoCovar.csv",stringsAsFactors=FALSE)}
+		  
+		  if(input$data.source == "My File") {data.file.tmp <- read.csv(inFile$datapath, stringsAsFactors=FALSE)}
 
 
 			# doing this here for now, but it's a kludge -> see https://github.com/avelez-espino/forecastR_phase4/issues/39
@@ -221,7 +224,6 @@ library("shinyBS")
 					}}
 
 			}
-
 
 
 			if(input$MainTab == "precheck"){
@@ -694,11 +696,11 @@ output$axis.label.sel <- renderUI({
 
     explore.model.selection <- reactive({
 
-    	if(input$model_use_precheck == 'SibRegComplex'){
+    	if(input$model_use_precheck == 'SibRegComplex' | input$model_use_precheck == 'NoAgeCovar' ){
     			   	fit.in <- precheck.modelfit()
 							age.in <- input$model.selection.ageclass
 
-							print("-----")
+							print("--X---")
 							print(names(fit.in[[age.in]]))
 
 							model.selection.df <- fit.in[[age.in]][["model.selection"]] %>%
@@ -707,7 +709,9 @@ output$axis.label.sel <- renderUI({
 											mutate(selected = recode(selected,"FALSE" = "","TRUE" = "X"))
     	}
 
-			if(input$model_use_precheck != 'SibRegComplex'){
+      
+      
+			if(input$model_use_precheck != 'SibRegComplex' & input$model_use_precheck != 'NoAgeCovar'){
 				model.selection.df <- data.frame(equ = NA, adj.r.sq = NA,     AIC = NA, diffAIC  = NA,   probAIC = NA )
 			}
 
@@ -1235,6 +1239,8 @@ output$axis.label.sel <- renderUI({
 
 					axis(2,at=n.models:1,labels=paste0(table.use$Model," (",table.use$RankByAge,")"),las=2,cex.axis=1.1)
 					axis(1)
+					
+				#	legend("topleft",legend = c("Point Forecast","Median of Interval"), pch = c(19,4),col="red")
 
 
 			})
