@@ -707,9 +707,17 @@ output$axis.label.sel <- renderUI({
 							if(age.in == "Not Applicable"){age.in <- "Total"}
 
 							model.selection.df <- fit.in[[age.in]][["model.selection"]] %>%
-											select(equ,numCoeff,rankAIC, rankRsq,selected) %>%
+											select(equ,numCoeff,rankAIC,shortAIC, rankRsq,shortRsq,shortBoth,selected) %>%
 								      mutate(selected = as.character(selected)) %>%
-											mutate(selected = recode(selected,"FALSE" = "","TRUE" = "X"))
+											mutate(selected = recode(selected,"FALSE" = "","TRUE" = "X")) %>%
+											mutate(shortAIC = as.character(shortAIC)) %>%
+											mutate(shortAIC = recode(shortAIC,"FALSE" = "","TRUE" = "X"))%>%
+							  mutate(shortRsq = as.character(shortRsq)) %>%
+							  mutate(shortRsq = recode(shortRsq,"FALSE" = "","TRUE" = "X"))%>%
+							  mutate(shortBoth = as.character(shortBoth)) %>%
+							  mutate(shortBoth = recode(shortBoth,"FALSE" = "","TRUE" = "X"))
+						       
+											       
     	}
 
       
