@@ -152,12 +152,12 @@ tabPanel("Display Settings", value= "display.settings",
                              bsPopover("display_settings_help", title = "Settings Used Throughout the App", content = 
                                          paste("FORECASTED VARIABLE is the label used in plots and tables.",
                                                "This does not affect any calculations.",
-                                               "Default value is the generic Abundance.",
-                                               "A common alternative is Terminal Run.",
-                                               "MODEL EQUATIONS can be displayed in result plots or not, depending on the target audience.",
-                                               "NUMBER OF DECIMALS determines the digits after 0 shown in tables. Default is 0, because the response variable in",
-                                               "Chinook salmon forecasting data sets is typically in number of fish."
-                                               ),
+                                               "Default value is the generic Abundance.",  
+                                               "A common alternative is Terminal Run." ),
+                                               #"MODEL EQUATIONS can be displayed in result plots or not, depending on the target audience.",
+                                               #"NUMBER OF DECIMALS determines the digits after 0 shown in tables. Default is 0, because the response variable in",
+                                               #"Chinook salmon forecasting data sets is typically in number of fish."
+                                               #),
                                        "bottom", trigger = "click"))
          )),
          
@@ -173,11 +173,9 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
                             bsButton(inputId = "covar_rescale_help", label="?",  size = "extra-small",
                                      style = "primary", type= "action"),
                             bsPopover("covar_rescale_help", title = "Data Treatment for Covariate Models", content = 
-                                        paste("insert some text to explain how these models use covariates",
-                                              ", how the covariate rescaling works, and why the default is TRUE.",
-                                              "Can also include links",a("like this", 
-                                                                         href = "https://academic.oup.com/icesjms/article/79/4/1259/6567589",
-                                                                         target="_blank"),"."),
+                                        paste(
+                                        "If turned on, then each covariate is rescaled to a 0-1 scale: New Value = Max(Abs(Old Values)"  
+                                        ),
                                       "bottom", trigger = "click")),        
                                 )),
                                 
