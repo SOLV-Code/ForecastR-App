@@ -1,5 +1,8 @@
 # THIS IS THE SCRIPT PACKS UP THE APP AND SENDS IT TO THE SHINY SERVER
 
+
+
+
 # RESOURCES
 #https://support.rstudio.com/hc/en-us/articles/229848967-Why-does-my-app-work-locally-but-not-on-shinyapps-io-
 
@@ -21,6 +24,8 @@ load_or_install(c("rsconnect","shiny","shinydashboard","shinyjqui","shiny","shin
 
 # test version deploy
 rsconnect::deployApp(appDir="App Files", appName="forecastRtesting",appTitle="forecastR_TEST")
+
+
 
 # deploy the app
 rsconnect::deployApp(appDir="App Files", appTitle="forecastR")

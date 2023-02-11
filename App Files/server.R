@@ -27,6 +27,12 @@ load_or_install(c("meboot","forecast"))
 library("meboot")
 library("forecast")
 
+
+# Need this for noage covar model
+library(ciTools)
+
+
+
 # Think it needs these here for the server deployment
 # These are all shiny specific (not needed in the package)
 load_or_install(c("ggplot2","DT","markdown","rmarkdown","shiny","shinydashboard","shinyjqui","shinyFiles","dplyr"))
@@ -54,16 +60,148 @@ library("shinyBS")
 	output$reports.path.use <- renderPrint({   parseDirPath(roots=volumes.use, selection =reports.path.use())  })
 
 
+	
+	########################################				
+	# CONDITIONAL TAB PANELS		
+	
+	
 
+	# EXPLORE TAB - Model diagnostic for SibReg Kalman
+	show.tab.kalman <-  reactive({ 
+	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
+	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck == "SibRegKalman"}
+ 	  return(test.out)})
+	
+	observeEvent(show.tab.kalman(), {
+	  test.flag <- show.tab.kalman() 
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Kalman Diagnostic")}
+	})
+	
 
+	# EXPLORE TAB - Model selection diagnostic for Covariate Models
+	show.tab.complexsibreg <-  reactive({ 
+	  if(is.null(input$model_use_precheck)){test.out <- FALSE}
+	  if(!is.null(input$model_use_precheck)){test.out <- input$model_use_precheck %in% c("SibRegComplex","NoAgeCovar")}
+	  return(test.out)})
+	
+	observeEvent(show.tab.complexsibreg(), {
+	  test.flag <- show.tab.complexsibreg() 
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Covar Model Diagnostic")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Covar Model Diagnostic")}
+	})	
+	
+	
 
+	# EXPLORE TAB - bootstrap diagnostics
+	show.tab.boots <-  reactive({ 
+	  if(is.null(input$interval.type.precheck)){test.out <- FALSE}
+	  if(!is.null(input$interval.type.precheck)){test.out <- input$interval.type.precheck == "Bootstrap"}
+	  return(test.out)})
+	
+	observeEvent(show.tab.boots(), {
+	  test.flag <- show.tab.boots() 
+	  if(!test.flag){hideTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
+	  if(test.flag){showTab(inputId = "DiagnosticsSub", target = "Bootstrapped Series")}
+	})	
+	
+	
+	
+	
+	# COMPARE TAB - Sib1, Sib2, Sib3, Sib Cov, Rate,  NoAgeCovar  Menus
+	
+	show.tab.sibs <-  reactive({ 
+	  data.file.tmp <- data.file()
+	  age.check <-   length(unique(data.file.tmp$Age_Class)) > 1
+	  return(age.check)})
+	
+	
+	show.tab.cov <-  reactive({ 
+	  data.file.tmp <- data.file()
+	  cov.check <-   sum(grepl("Cov_",names(data.file.tmp)))>1
+	  return(cov.check)})	
+	
+	show.tab.rate <-  reactive({ 
+	  data.file.tmp <- data.file()
+	  rate.check <-   sum(grepl("Pred_",names(data.file.tmp)))>1
+	  return(rate.check)})	
+	
+	observeEvent(	show.tab.sibs(), {
+	  test.flag <- 	show.tab.sibs() 
+	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "Sib1")}
+	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "Sib1")}
+	})
+	
+	observeEvent(	show.tab.sibs(), {
+	  test.flag <- 	show.tab.sibs() 
+	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "Sib2")}
+	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "Sib2")}
+	})	
+	
+	
+	observeEvent(	show.tab.sibs(), {
+	  test.flag <- 	show.tab.sibs() 
+	  if(!test.flag){hideTab(inputId = "CompareModelSettings", target = "Sib3")}
+	  if(test.flag){showTab(inputId = "CompareModelSettings", target = "Sib3")}
+	})	
+	
+	observeEvent(	show.tab.sibs(), {
+	  sib.flag <- 	show.tab.sibs() 
+	  cov.flag <- show.tab.cov()
+	  sibcov.flag <- sib.flag & cov.flag
+	  if(!sibcov.flag ){hideTab(inputId = "CompareModelSettings", target = "SibCov")}
+	  if(sibcov.flag ){showTab(inputId = "CompareModelSettings", target = "SibCov")}
+	})	
+	
+	observeEvent(	show.tab.sibs(), {
+	  sib.flag <- 	show.tab.sibs() 
+	  rate.flag <- show.tab.rate()
+	  sibrate.flag <- sib.flag & rate.flag
+
+	  if(!sibrate.flag ){hideTab(inputId = "CompareModelSettings", target = "Rate")}
+	  if(sibrate.flag ){showTab(inputId = "CompareModelSettings", target = "Rate")}
+	})		
+	
+	
+	observeEvent(	show.tab.sibs(), {   
+	  sib.flag <- 	show.tab.sibs() 
+	  cov.flag <- show.tab.cov()
+	  noagecovar.flag <- !sib.flag & cov.flag   # if have no ages, but have covariates
+	  if(!noagecovar.flag ){hideTab(inputId = "CompareModelSettings", target = "NoAgeCovar")}
+	  if(noagecovar.flag ){showTab(inputId = "CompareModelSettings", target = "NoAgeCovar")}
+	})	
+	
+	
+	#########################################################
+	
+	
 	# Read in user-selected input file
     data.file <- reactive({
 		inFile <- input$file.name.2
-		if(is.null(inFile)){ data.use <- matrix(NA,ncol=2,nrow=5)}
-		if(!is.null(inFile)){
+		
+		
+		if(is.null(inFile) & input$data.source == "My File"){ 
+		  #data.use <- matrix(NA,ncol=2,nrow=5)
+		  
+		  yrs.vec <- 	1992:2019
+		  n.yrs <- length(yrs.vec)
+		  data.use <- data.frame(Stock_Name	= c("Placeholder",rep(NA,n.yrs-1)),
+		                         Stock_Species	= c("Placeholder",rep(NA,n.yrs-1)),	
+		                         Stock_Abundance	= c("Placeholder",rep(NA,n.yrs-1)),	
+		                         Forecasting_Year = c(2020,rep(NA,n.yrs-1)),
+		                         Run_Year	= 1992:2019,
+                             Average_Escapement = rep(NA, )
+		  )
+		  }
+		
+		if(!is.null(inFile) | input$data.source != "My File"){
 
-			data.file.tmp <- read.csv(inFile$datapath, stringsAsFactors=FALSE)
+		  if(input$data.source == "Sample 1 - Ages With Covariates"){data.file.tmp <- read.csv("DATA/AgeSampleFile.csv",stringsAsFactors=FALSE)}
+	    if(input$data.source == "Sample 2 - No Ages with Covariates"){data.file.tmp <- read.csv("DATA/NoAgeSampleFile.csv",stringsAsFactors=FALSE)}
+		  if(input$data.source == "Sample 3 - Ages, No Covariates"){data.file.tmp <- read.csv("DATA/AgeSampleFile_NoCovar.csv",stringsAsFactors=FALSE)}
+		  if(input$data.source == "Sample 4 - No Ages, No Covariates"){data.file.tmp <- read.csv("DATA/NoAgeSampleFile_NoCovar.csv",stringsAsFactors=FALSE)}
+		  
+		  if(input$data.source == "My File") {data.file.tmp <- read.csv(inFile$datapath, stringsAsFactors=FALSE)}
 
 
 			# doing this here for now, but it's a kludge -> see https://github.com/avelez-espino/forecastR_phase4/issues/39
@@ -78,15 +216,14 @@ library("shinyBS")
 			yrs.window <- min(data.use$Run_Year) : max(data.use$Run_Year) # need this for all the other tabs -> just keep all the records
 
 
-			if(!is.null(input$cov.rescale)){
-				if(input$cov.rescale){
+			if(!is.null(input$cov_rescale)){
+				if(input$cov_rescale){
 					cov.idx <- which(grepl("Cov",dimnames(data.use)[[2]]))
 					for(i in cov.idx){
 						data.use[,i] <-   data.use[,i] / max(abs(data.use[,i] ),na.rm=TRUE)
 					}}
 
 			}
-
 
 
 			if(input$MainTab == "precheck"){
@@ -142,16 +279,27 @@ model.list <-  reactive({
 	# models for all input types
 	model.types <- list("Naive" = "Naive", "Time Series" = c("TimeSeriesArima","TimeSeriesExpSmooth"))
 
-	pred.check <- sum(grepl("Pred_",names(data.file.tmp))) > 0  # have any predictor vars in data set?
-	if(pred.check){ model.types <- c(model.types,list(ReturnRate = "ReturnRate"))}
 
 	age.check <-   length(unique(data.file.tmp$Age_Class)) > 1   # have age classes in the data set?
 	if(age.check){ model.types <- c(model.types,list(Sibling = c("SibRegSimple","SibRegLogPower", "SibRegKalman",
 																																"SibRegPooledSimple","SibRegPooledLogPower")))}
+	
 
 	cov.check <- sum(grepl("Cov_",names(data.file.tmp))) > 0  # have any covariates in data set?
-	if(cov.check){ 	model.types$Sibling <- c(model.types$Sibling,"SibRegComplex")}
+	if(cov.check & age.check ){ 	model.types$Sibling <- c(model.types$Sibling,"SibRegComplex")}
+	
+	
+	if(!age.check & cov.check){ model.types <- c(model.types,list(NoAgeCovar = "NoAgeCovar"))}
+	
+	
+	pred.check <- sum(grepl("Pred_",names(data.file.tmp))) > 0  # have any predictor vars in data set?
+	if(pred.check & age.check){ model.types <- c(model.types,list(ReturnRate = "ReturnRate"))}
+	
 
+	
+  print("model.types --------------------------")
+	print(model.types)
+	
 	return(model.types)
 	})
 
@@ -198,6 +346,17 @@ axis.label.default <-  reactive({
 	})
 
 
+
+######################################################################
+# SETTING UP TAB PIECES
+######################################################################
+
+
+
+
+
+
+
 ######################################################################
 # MODEL PRE_CHECK PIECES ("Explore" Tab)
 ######################################################################
@@ -213,14 +372,14 @@ output$model_menu_precheck <- renderUI({
 
 # Predictor Variable List for Explore Tab
 output$pred_var_precheck_menu <- renderUI({
-	selectInput("pred.var.precheck", label = "Rate: Predictor", choices = predictors.list(),
+	selectInput("pred.var.precheck", label = "Predictor", choices = predictors.list(),
 							multiple=FALSE,selected = predictors.list()[1] )
 				})
 
 
 # Ages List for Explore Tab
 output$ages.menu.precheck <- renderUI({
-	selectizeInput("precheck.ageclass", "Age Class", choices = ages.list(),
+	selectizeInput("precheck.ageclass", "Age Class to Plot", choices = ages.list(),
 								 multiple=FALSE, selected=ages.list()[1])
 })
 
@@ -236,25 +395,25 @@ output$ages.menu.model.selection <- renderUI({
 
 # TS: box cox option for Explore Tab
 output$boxcox.precheck.menu <- renderUI({
-	checkboxInput("precheck.boxcox", label="Time Series: Box-Cox Transform", value = FALSE )
+	checkboxInput("precheck.boxcox", label="Box-Cox Transform", value = FALSE )
 })
 
 
 # Naive: num yrs avg option for Explore Tab
 output$avgyrs_precheck_menu <- renderUI({
-	numericInput("precheck.avgyrs", label=h5("Naive: Avg Years"), value = 3 , min = 1, max = 10, step = 1,   width = "50%")
+	numericInput("precheck.avgyrs", label=h5("Avg Years"), value = 3 , min = 1, max = 10, step = 1,   width = "50%")
 })
 
 
 # Sibreg Kalman: AVG N OPTION for Explore Tab
 output$intavg.precheck.menu <- renderUI({
-	numericInput("precheck.intavg", label=h5("SibReg Kalman: Avg n Est"), value = 5, min = 1, max = 10, step = 1,   width = "50%")
+	numericInput("precheck.intavg", label=h5("Avg n Est"), value = 5, min = 1, max = 10, step = 1,   width = "50%")
 })
 
 
 # Sibreg Pooled Simple: max age classes to pool
 output$max.pool.precheck.menu <- renderUI({
-	numericInput("precheck.max.pool", label=h5("SibReg Pooled (Simple or Log Power): Max cohorts to pool"), value = 3, min = 2, max = 5, step = 1,   width = "50%")
+	numericInput("precheck.max.pool", label=h5("Max Pool"), value = 3, min = 2, max = 5, step = 1,   width = "70%")
 })
 
 
@@ -262,7 +421,7 @@ output$max.pool.precheck.menu <- renderUI({
 
 # Sibreg Complex: Model selection tolerance settings for Explore Tab
 output$complex.precheck.menu1 <- renderUI({
-	numericInput("precheck.tol.AIC", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "50%")
+	numericInput("precheck.tol.AIC", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "70%")
 	})
 
 output$complex.precheck.menu2 <- renderUI({
@@ -270,31 +429,46 @@ output$complex.precheck.menu2 <- renderUI({
 	numericInput("precheck.tol.r.sq", label=h5("R² [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "50%")
 })
 
-output$complex_precheck_help <- renderUI({
-  actionButton(inputId = "id_my_button",
-               icon = icon("question-circle"),
-               label="",
-               #size = "xs",
-               style = "material-circle",
-               color = "primary")
+
+# NoAgeCOvar: Model selection tolerance settings for Explore Tab (same structure as complex sibreg above)
+output$noagecovar.precheck.menu1 <- renderUI({
+  numericInput("precheck.tol.AIC.noage", label=h5("AIC [1-0]"), value = 0.75, min = 0, max = 1, step = 0.1,   width = "70%")
+})
+
+output$noagecovar.precheck.menu2 <- renderUI({
+  # HTML(paste0("Label (unit = m",tags$sup("2"), ')')) FOR LATER FORMATTING
+  numericInput("precheck.tol.r.sq.noage", label=h5("R² [0-1]"), value = 0.02, min = 0, max = 1, step = 0.1,   width = "70%")
 })
 
 
 
-
-# Predictor Variable List for Compare Tab - Model 10
+# Predictor Variable List for Compare Tab - Model 10 "Any 1"
 output$m10.pred.var.menu <- renderUI({
 	selectInput("m10.pred.var", label = "Rate:Predictor", choices = predictors.list(),
 							multiple=FALSE,selected = predictors.list()[1] )
 })
 
 
-
-# Predictor Variable List for Compare Tab - Model 11
+# Predictor Variable List for Compare Tab - Model 11 "Rate"
 output$m11.pred.var.menu <- renderUI({
-	selectInput("m11.pred.var", label = "Predictor", choices = predictors.list(),
-							multiple=FALSE,selected = predictors.list()[1] )
+  selectInput("m11.pred.var", label = "Rate:Predictor", choices = predictors.list(),
+              multiple=FALSE,selected = predictors.list()[1] )
 })
+
+
+# Predictor Variable List for Compare Tab - Model 13 "Any 2"
+output$m13.pred.var.menu <- renderUI({
+  selectInput("m13.pred.var", label = "Rate:Predictor", choices = predictors.list(),
+              multiple=FALSE,selected = predictors.list()[1] )
+})
+
+
+# Predictor Variable List for Compare Tab - Model 14 "Any 3"
+output$m14.pred.var.menu <- renderUI({
+  selectInput("m14.pred.var", label = "Rate:Predictor", choices = predictors.list(),
+              multiple=FALSE,selected = predictors.list()[1] )
+})
+
 
 
 # Default label of forecasted value from settings tab
@@ -333,6 +507,16 @@ output$axis.label.sel <- renderUI({
 				if(input$model_use_precheck  %in% c( "SibRegSimple","SibRegLogPower")){settings.use <- NULL}
 				if(input$model_use_precheck  %in% c( "SibRegPooledSimple","SibRegPooledLogPower")){
 																											settings.use <- list(max.pool = input$precheck.max.pool)}
+	      
+	  	       if(input$model_use_precheck  %in% c("NoAgeCovar")){settings.use <- 	  list(glm.family = "poisson", # pkg function has more options, but for now only this tested
+	                                                                                  tol.AIC = input$precheck.tol.AIC.noage,
+	                                                                                  tol.r.sq = input$precheck.tol.r.sq.noage,
+	                                                                                  base.eq ="Total ~") # pkg function has more options, but for now only this tested
+	                                                                                }
+	  
+
+	  
+	  
 				return(settings.use)
 
 					})
@@ -512,20 +696,33 @@ output$axis.label.sel <- renderUI({
 
     explore.model.selection <- reactive({
 
-    	if(input$model_use_precheck == 'SibRegComplex'){
+    	if(input$model_use_precheck == 'SibRegComplex' | input$model_use_precheck == 'NoAgeCovar' ){
     			   	fit.in <- precheck.modelfit()
 							age.in <- input$model.selection.ageclass
 
-							print("-----")
+							print("--X---")
+							print(age.in)
 							print(names(fit.in[[age.in]]))
+							
+							if(age.in == "Not Applicable"){age.in <- "Total"}
 
 							model.selection.df <- fit.in[[age.in]][["model.selection"]] %>%
-											select(equ,numCoeff,rankAIC, rankRsq,selected) %>%
+											select(equ,numCoeff,rankAIC,shortAIC, rankRsq,shortRsq,shortBoth,selected) %>%
 								      mutate(selected = as.character(selected)) %>%
-											mutate(selected = recode(selected,"FALSE" = "","TRUE" = "X"))
+											mutate(selected = recode(selected,"FALSE" = "","TRUE" = "X")) %>%
+											mutate(shortAIC = as.character(shortAIC)) %>%
+											mutate(shortAIC = recode(shortAIC,"FALSE" = "","TRUE" = "X"))%>%
+							  mutate(shortRsq = as.character(shortRsq)) %>%
+							  mutate(shortRsq = recode(shortRsq,"FALSE" = "","TRUE" = "X"))%>%
+							  mutate(shortBoth = as.character(shortBoth)) %>%
+							  mutate(shortBoth = recode(shortBoth,"FALSE" = "","TRUE" = "X"))
+						       
+											       
     	}
 
-			if(input$model_use_precheck != 'SibRegComplex'){
+      
+      
+			if(input$model_use_precheck != 'SibRegComplex' & input$model_use_precheck != 'NoAgeCovar'){
 				model.selection.df <- data.frame(equ = NA, adj.r.sq = NA,     AIC = NA, diffAIC  = NA,   probAIC = NA )
 			}
 
@@ -784,16 +981,40 @@ output$axis.label.sel <- renderUI({
 
 
 
-				# Any Model
-				if(input$m10.use){multifc.list[[input$m10.name]] <-list(model.type= input$m10.modeltype, settings=extractSettings(input$m10.modeltype,input$m10.avgyrs,input$m10.boxcox,input$m10.kfyear,
-																																																													input$m10.max.pool,
-																																																													input$m10.pred.var,input$m10.rate.avg,input$m10.last.n,
-																																																													input$m10.tol.AIC,input$m10.tol.r.sq))}
+				# Any Model (up to 3)
+
+				if(input$m10.use){multifc.list[[input$m10.name]] <-list(model.type= input$m10.modeltype, 
+				                                                        settings=extractSettings(input$m10.modeltype,
+				                                                                  input$m10.avgyrs,input$m10.boxcox,input$m10.kfyear,
+																																					input$m10.max.pool,
+																																					input$m10.pred.var,input$m10.rate.avg,input$m10.last.n,
+																																					input$m10.tol.AIC,input$m10.tol.r.sq))}
 
 
-
-
-
+				if(input$m13.use){multifc.list[[input$m13.name]] <-list(model.type= input$m13.modeltype, 
+				                                                        settings=extractSettings(input$m13.modeltype,
+				                                                                                 input$m13.avgyrs,input$m13.boxcox,input$m13.kfyear,
+				                                                                                 input$m13.max.pool,
+				                                                                                 input$m13.pred.var,input$m13.rate.avg,input$m13.last.n,
+				                                                                                 input$m13.tol.AIC,input$m13.tol.r.sq))}
+				
+				if(input$m14.use){multifc.list[[input$m14.name]] <-list(model.type= input$m14.modeltype, 
+				                                                        settings=extractSettings(input$m14.modeltype,
+				                                                                                 input$m14.avgyrs,input$m14.boxcox,input$m14.kfyear,
+				                                                                                 input$m14.max.pool,
+				                                                                                 input$m14.pred.var,input$m14.rate.avg,input$m14.last.n,
+				                                                                                 input$m14.tol.AIC,input$m14.tol.r.sq))}
+				
+				
+				# NoAge Covar
+				if(input$m15.use){multifc.list[[input$m15.name]] <-list(model.type= input$m15.modeltype,
+				                                                        settings=extractSettings(input$m15.modeltype,input$m15.avgyrs,input$m15.boxcox,input$m15.kfyear,input$m15.max.pool,
+				                                                                                 input$m15.pred.var,input$m15.rate.avg,input$m15.last.n,
+				                                                                                 input$m15.tol.AIC,input$m15.tol.r.sq)) }
+				#print(multifc.list[[input$m12.name]])
+				
+				
+				
 
 				print("multifc.list-------------------------")
 				print(multifc.list)
@@ -1029,6 +1250,8 @@ output$axis.label.sel <- renderUI({
 
 					axis(2,at=n.models:1,labels=paste0(table.use$Model," (",table.use$RankByAge,")"),las=2,cex.axis=1.1)
 					axis(1)
+					
+					legend("topleft",legend = c("Point Forecast","Median of Interval"), pch = c(19,4),col="red",pt.cex = 1.7, cex=1.3,bty="n")
 
 
 			})
@@ -1400,11 +1623,16 @@ output$axis.label.sel <- renderUI({
 # OTHER STUFF
 ######################################################################
 
-	output$inputheader.table <- renderTable({ data.file() })  # masking issue with package DT? shiny::renderTable doesn't fix it
-					#, options = list(scrollX = TRUE, scrollY = "200px")
+	#output$inputheader.table <- renderTable({ data.file() })  # masking issue with package DT? shiny::renderTable doesn't fix it
+	#				#, options = list(scrollX = TRUE, scrollY = "200px")
 
 
-
+ 	output$inputheader.table <- DT::renderDataTable(
+ 	  DT::datatable(data.file(), extensions = 'Buttons',
+ 	                options = list(paging = FALSE ,
+ 	                               dom = 'Bfrtip',	buttons =  list(
+ 	                                 list(extend = 'csv', filename = "DataFile"))))
+ 	)
 
 
 

@@ -11,31 +11,23 @@ Vélez-Espino, L.A., Parken, C.K., Clemons, E.R., Peterson, R., Ryding, K., Folk
 
 ### Project Overview
 
-The annual exercise of forecasting terminal run or escapement is a critical aspect of management and conservation of salmonids. ForecastR relies on the open-source statistical software R to generate age-specific (or total abundance) forecasts of escapement or terminal run using a variety of generic models, enabling the users to perform the following interactive tasks with the help of a Graphical user Interface (GUI). These tasks include: (a) the selection of forecasting approaches from a wide set of statistical and/or mechanistic models for forecasting terminal run, escapement or pre-fishery abundance (production); (b) the selection of several measures of retrospective forecast performance (e.g., MRE, MAE, MAPE, MASE, RMSE); (c) the comparison of best forecasting models and model ranking based on the selected performance metrics; and, (d) the reporting of forecasting results (point forecasts and interval forecasts) and diagnostics by producing either a detailed report or an executive-summary report. 
+ForecastR relies on the open-source statistical software R (R Core Team 2018) to generate age-specific (or total abundance) forecasts of salmon escapement or terminal run using a variety of generic models and enabling users to perform interactive tasks with the help of a Graphical User Interface (GUI). These tasks include: 
 
-The original design of ForecastR involves the generation of age-specific or total-abundance forecasts using a variety of generic models, including: (i) simple and complex sibling regressions with the ability to include environmental covariates; (ii) time series models such as ARIMA, exponential smoothing, and naïve models (based on preceding 1 year, 3 years or 5 years in abundance time series); and (iii) mechanistic models such as average return rate models that depend on auxiliary data such as the number of outmigrant juveniles, the number of hatchery fish released or the number spawners. For both age-structured and non-age-structured data, AIC-based model selection takes place within model types prior to model ranking across model types based on the abovementioned metrics of retrospective evaluation.
+a) the selection of forecasting approaches from a wide set of statistical and/or mechanistic models for forecasting terminal run and escapement;
 
-The current phase of the ForecastR project produced the *forecastR_phase4* release, which incorporated improvements and refinements to the GUI, the complex-sibling-regression module, and the mechanistic-model module. An important development of this phase of the project involved the incorporation of a Kalman Filter sibling regressions module to consider the effects on forecasts of potential trends in survival or maturity. The inclusion in ForecastR of a Kalman filter module responds to recommendations to the PSC in *Review of Methods for Forecasting Chinook Salmon Abundance in the Pacific Salmon Treaty Areas* (Peterman, Beamesderfer and Bue, 2016). In addition, new ForecastR's features have been envisioned by the proponents of this project to enhance its current capabilities. Examples of these additional features include the incorporation of GLM-based sibling models (to address violations to normality assumptions and provide greater flexibility to sibling regressions) and the development of an alternative retrospective forecast evaluation for regression models using *dynamic* best models. 
+b) the selection of several measures of retrospective forecast performance (e.g., MRE, MAE, MAPE, MASE, RMSE); 
 
-### Timelines
-* Project Start: April 1, 2018
-* Project Completion: January 30, 2019
-* Release of *forecastR_phase4*: February 15, 2019
+c) the comparison of forecasting models and model selection and ranking; and, 
 
+d) the reporting of forecasting results (point forecasts and interval forecasts) and diagnostics by producing either  detailed reports or executive-summary reports. 
 
-### Contributors
-* Antonio Velez-Espino:Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo BC 
-* Charles K. Parken: Fisheries and Oceans Canada, Kamloops BC
-* Ethan Clemons: Oregon Department of Fish and Wildlife, Newport, OR
-* Randy Peterson: Alaska Department of Fish and Game, Juneau, AK
-* Kristen Ryding: Washington Department of Fish and Wildlife, Olympia, WA   
-* Isabella Ghement: Ghement Statistical Consulting Company Ltd. 
-* Gottfried Pestal: SOLV Consulting Ltd. 
-* Michael Folkes: Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo BC 
-* Carrie Holt: Fisheries and Oceans Canada, Pacific Biological Station, Nanaimo BC   
+The original design of ForecastR involved the generation of age-specific or total-abundance forecasts using several forecasting approaches, including: (i) simple and complex sibling regressions with the ability to include environmental/biological covariates; (ii) time series models such as ARIMA, exponential smoothing, and naïve models (based on any number of preceding years in abundance time series); and (iii) mechanistic models such as average return rate models that depend on auxiliary data such as the number of outmigrant juveniles, the number of hatchery fish released or the number of spawners in previous years. For both age-structured and non-age-structured data, AIC-based model selection takes place within model types (e.g., ARIMA and exponential smoothing) prior to model ranking across model types based on the abovementioned metrics of retrospective evaluation.
 
-### References
-Peterman, R.M., Beamesderfer, R., and Bue, B. 2016. Review of Methods for Forecasting Chinook Salmon Abundance in the Pacific Salmon Treaty Areas. Report to the Pacific Salmon Commission.165 p.
+After six developmental phases, the latest release has successfully implemented most of the originally envisioned capabilities for this tool. Additional information about the project and older ForecastR Releases can be found in the GitHub site: https://github.com/SalmonForecastR/ForecastR-Releases. Previous releases have focused on improvements and refinements to the GUI and incorporated a Kalman-Filter sibling regressions module to consider the effects on forecasts of potential trends in survival and/or maturity. In addition, two important developments took place during the last two phases of the ForecastR project: (1) the code for forecasting and model ranking approaches was converted into and R-package to facilitate distribution of the program, allow optimal tracking of functions, and provide the ideal environment for future development; and, (2) an html-based Shiny application (that relies on the R-package for forecasting and model ranking operations) has been produced to allow online forecasting exercises. Progress was also made on two other forecasting approaches, namely the complex-sibling-regression module and the return-rate mechanistic module. These two modules were completed and incorporated in the previous release. Detailed information about ForecastR’s current capabilities and description of forecasting models, including the complex-sibling-regression and return-rate, can be found in the Final Report.
 
+Converting ForecastR into an R-package was an important accomplishment because it provided a simple way to distribute the tool and corresponding documentation. From the user’s point of view, the R-package is easy to install and use without risking its integrity. From the developer’s perspective, having an R-package helps to keep track of the miscellaneous R functions, and in the future it would help the process of potential debugging and the development of new capabilities.
+Counting with an html-based Shiny application allows online forecasting exercises without users having ForecastR installed in their computers. The App can be accessed through two different servers: (https://psc1.shinyapps.io/ForecastR/ and https://solv-code.shinyapps.io/forecastr/).
+
+ForecastR is considered a ‘working project’ in which additional forecasting modules and program capabilities to assist can be incorporated in the future to support the ForecastR's community."
 
 
