@@ -118,12 +118,12 @@ library("shinyBS")
 	
 	show.tab.cov <-  reactive({ 
 	  data.file.tmp <- data.file()
-	  cov.check <-   sum(grepl("Cov_",names(data.file.tmp)))>1
+	  cov.check <-   sum(grepl("Cov_",names(data.file.tmp)))>=1
 	  return(cov.check)})	
 	
 	show.tab.rate <-  reactive({ 
 	  data.file.tmp <- data.file()
-	  rate.check <-   sum(grepl("Pred_",names(data.file.tmp)))>1
+	  rate.check <-   sum(grepl("Pred_",names(data.file.tmp)))>=1
 	  return(rate.check)})	
 	
 	observeEvent(	show.tab.sibs(), {
@@ -153,11 +153,17 @@ library("shinyBS")
 	  if(sibcov.flag ){showTab(inputId = "CompareModelSettings", target = "SibCov")}
 	})	
 	
-	observeEvent(	show.tab.sibs(), {
+	observeEvent(	show.tab.sibs() | show.tab.rate() , {
 	  sib.flag <- 	show.tab.sibs() 
 	  rate.flag <- show.tab.rate()
 	  sibrate.flag <- sib.flag & rate.flag
-
+	  print("SIB FLAG---------------")
+	  print(sib.flag)
+	  print("RATE FLAG---------------")
+	  print(rate.flag)
+    print("SIBRATE FLAG---------------")
+	  print(sibrate.flag)
+	  
 	  if(!sibrate.flag ){hideTab(inputId = "CompareModelSettings", target = "Rate")}
 	  if(sibrate.flag ){showTab(inputId = "CompareModelSettings", target = "Rate")}
 	})		
@@ -948,8 +954,7 @@ output$axis.label.sel <- renderUI({
 
 				multifc.list <- NULL
 
-				# SHOULD CHANGE THE INPUTS FOR extractSettings() to a named list!!!!!!!!!!!!!!!!!!
-
+		
 				# Naive Models
 				if(input$m1.use){multifc.list[[input$m1.name]] <-list(model.type= input$m1.modeltype, settings=extractSettings(input$m1.modeltype,input$m1.avgyrs,input$m1.boxcox,input$m1.kfyear))	}
 				if(input$m2.use){multifc.list[[input$m2.name]] <-list(model.type= input$m2.modeltype, settings=extractSettings(input$m2.modeltype,input$m2.avgyrs,input$m2.boxcox,input$m2.kfyear))	}
@@ -985,49 +990,77 @@ output$axis.label.sel <- renderUI({
 				# Return Rate Model
 				if(input$m11.use){
 
-							multifc.list[[input$m11.name]] <-list(model.type= input$m11.modeltype,
-																										settings=extractSettings(input$m11.modeltype,
-																																						 input$m11.avgyrs,
-																																						 input$m11.boxcox,
-																																						 input$m11.kfyear,
-																																						 input$m11.pred.var,input$m11.rate.avg,input$m11.last.n,
-																																						 input$m11.max.pool,
-																																						 input$m11.tol.AIC,input$m11.tol.r.sq))}
-
-
-
-
+							multifc.list[[input$m11.name]] <-list(model.type= input$m11.modeltype, 
+							                                      settings=extractSettings(
+							                                        model.type = input$m11.modeltype,
+							                                        avg.years =  input$m11.avgyrs,
+							                                        BoxCox =  input$m11.boxcox,
+							                                        int.avg = input$m11.kfyear,
+							                                        pred.var = input$m11.pred.var,
+							                                        rate.avg =	input$m11.rate.avg,
+							                                        last.n =	input$m11.last.n,
+							                                        max.pool=	input$m11.max.pool,
+							                                        tol.AIC = input$m11.tol.AIC,
+							                                        tol.r.sq =	input$m11.tol.r.sq))}
 
 				# Any Model (up to 3)
 
 				if(input$m10.use){multifc.list[[input$m10.name]] <-list(model.type= input$m10.modeltype, 
-				                                                        settings=extractSettings(input$m10.modeltype,
-				                                                                  input$m10.avgyrs,input$m10.boxcox,input$m10.kfyear,
-																																					input$m10.max.pool,
-																																					input$m10.pred.var,input$m10.rate.avg,input$m10.last.n,
-																																					input$m10.tol.AIC,input$m10.tol.r.sq))}
+				                                                        settings=extractSettings(
+				                                                          model.type = input$m10.modeltype,
+				                                                          avg.years =  input$m10.avgyrs,
+				                                                          BoxCox =  input$m10.boxcox,
+				                                                          int.avg = input$m10.kfyear,
+				                                                          pred.var = input$m10.pred.var,
+				                                                          rate.avg =	input$m10.rate.avg,
+				                                                          last.n =	input$m10.last.n,
+				                                                          max.pool=	input$m10.max.pool,
+				                                                          tol.AIC = input$m10.tol.AIC,
+				                                                          tol.r.sq =	input$m10.tol.r.sq))}
 
+
+				
 
 				if(input$m13.use){multifc.list[[input$m13.name]] <-list(model.type= input$m13.modeltype, 
-				                                                        settings=extractSettings(input$m13.modeltype,
-				                                                                                 input$m13.avgyrs,input$m13.boxcox,input$m13.kfyear,
-				                                                                                 input$m13.max.pool,
-				                                                                                 input$m13.pred.var,input$m13.rate.avg,input$m13.last.n,
-				                                                                                 input$m13.tol.AIC,input$m13.tol.r.sq))}
+				                                                        settings=extractSettings(
+				                                                          model.type = input$m13.modeltype,
+				                                                          avg.years =  input$m13.avgyrs,
+				                                                          BoxCox =  input$m13.boxcox,
+				                                                          int.avg = input$m13.kfyear,
+				                                                          pred.var = input$m13.pred.var,
+				                                                          rate.avg =	input$m13.rate.avg,
+				                                                          last.n =	input$m13.last.n,
+				                                                          max.pool=	input$m13.max.pool,
+				                                                          tol.AIC = input$m13.tol.AIC,
+				                                                          tol.r.sq =	input$m13.tol.r.sq))}
 				
 				if(input$m14.use){multifc.list[[input$m14.name]] <-list(model.type= input$m14.modeltype, 
-				                                                        settings=extractSettings(input$m14.modeltype,
-				                                                                                 input$m14.avgyrs,input$m14.boxcox,input$m14.kfyear,
-				                                                                                 input$m14.max.pool,
-				                                                                                 input$m14.pred.var,input$m14.rate.avg,input$m14.last.n,
-				                                                                                 input$m14.tol.AIC,input$m14.tol.r.sq))}
+				                                                        settings=extractSettings(
+				                                                          model.type = input$m14.modeltype,
+				                                                          avg.years =  input$m14.avgyrs,
+				                                                          BoxCox =  input$m14.boxcox,
+				                                                          int.avg = input$m14.kfyear,
+				                                                          pred.var = input$m14.pred.var,
+				                                                          rate.avg =	input$m14.rate.avg,
+				                                                          last.n =	input$m14.last.n,
+				                                                          max.pool=	input$m14.max.pool,
+				                                                          tol.AIC = input$m14.tol.AIC,
+				                                                          tol.r.sq =	input$m14.tol.r.sq))}
 				
 				
 				# NoAge Covar
-				if(input$m15.use){multifc.list[[input$m15.name]] <-list(model.type= input$m15.modeltype,
-				                                                        settings=extractSettings(input$m15.modeltype,input$m15.avgyrs,input$m15.boxcox,input$m15.kfyear,input$m15.max.pool,
-				                                                                                 input$m15.pred.var,input$m15.rate.avg,input$m15.last.n,
-				                                                                                 input$m15.tol.AIC,input$m15.tol.r.sq)) }
+				if(input$m15.use){multifc.list[[input$m15.name]] <-list(model.type= input$m15.modeltype, 
+				                                                        settings=extractSettings(
+				                                                          model.type = input$m15.modeltype,
+				                                                          avg.years =  input$m15.avgyrs,
+				                                                          BoxCox =  input$m15.boxcox,
+				                                                          int.avg = input$m15.kfyear,
+				                                                          pred.var = input$m15.pred.var,
+				                                                          rate.avg =	input$m15.rate.avg,
+				                                                          last.n =	input$m15.last.n,
+				                                                          max.pool=	input$m15.max.pool,
+				                                                          tol.AIC = input$m15.tol.AIC,
+				                                                          tol.r.sq =	input$m15.tol.r.sq))}
 				#print(multifc.list[[input$m12.name]])
 				
 				
