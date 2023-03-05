@@ -927,6 +927,23 @@ output$axis.label.sel <- renderUI({
 
 	  output$compare.ageclass <- renderText({  input$compare.ageclass })
 
+  
+  # model list for m10 (any1)
+  output$model_menu_m10 <- renderUI({
+        selectizeInput("m10.modeltype", "Model Type", choices = model.list(), selected=NULL, multiple = FALSE,width = "40%")
+  })
+  
+  # model list for m13 (any2)
+  output$model_menu_m13 <- renderUI({
+    selectizeInput("m13.modeltype", "Model Type", choices = model.list(), selected=NULL, multiple = FALSE,width = "40%")
+  })
+  
+  # model list for m14 (any3)
+  output$model_menu_m14 <- renderUI({
+    selectizeInput("m14.modeltype", "Model Type", choices = model.list(), selected=NULL, multiple = FALSE,width = "40%")
+  })
+  
+  
      multifc.list.gui <- reactive({
 
 				multifc.list <- NULL
