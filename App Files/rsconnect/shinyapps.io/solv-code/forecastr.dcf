@@ -5,7 +5,7 @@ account: solv-code
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 402879
-bundleId: 5573187
+bundleId: 6835081
 url: https://solv-code.shinyapps.io/forecastr/
-when: 1644706815.09339
-lastSyncTime: 1644706815.09339
+when: 1676104270.06381
+lastSyncTime: 1676104270.06381
