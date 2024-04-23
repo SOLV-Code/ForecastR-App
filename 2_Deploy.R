@@ -18,7 +18,8 @@ load_or_install <- function(package_names){
 is_installed <- function(mypkg){ is.element(mypkg, installed.packages()[,1])  }
 
 # load/install functions needed for shiny dashboard
-load_or_install(c("rsconnect","shiny","shinydashboard","shinyjqui","shiny","shinydashboard","DT","ggplot2","shinyFiles"))
+load_or_install(c("rsconnect","shiny","shinydashboard","shinyjqui",
+                  "shiny","shinydashboard","DT","ggplot2","shinyFiles","lme4"))
 
 
 

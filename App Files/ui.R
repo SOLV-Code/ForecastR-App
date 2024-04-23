@@ -136,7 +136,9 @@ tabPanel("Data Loading", value = "data.loading",
                           #target="_blank")
                           )
       )),                               
-      hr(),                       
+      hr(), 
+      p("Note that escapement and terminal run are rounded to the nearest integer, unless rounding is
+        turned off on Data Treatment Settings tab"),
       div(style = "height:500px; overflow-y: scroll;overflow-x: scroll;",
           	# OLD			tableOutput("inputheader.table"),
           DT::dataTableOutput("inputheader.table"),
