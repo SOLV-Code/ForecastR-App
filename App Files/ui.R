@@ -168,7 +168,21 @@ tabPanel("Display Settings", value= "display.settings",
 ), # end  display settings panel
 
 tabPanel("Data Treatment Settings", value= "data.treatment.settings",  
-        fluidRow(column(10, div(style="display: inline-block;",tags$h4("Covariate Models: Complex Sibling Regressions, NoAge Covar")),
+        
+         fluidRow(column(10, div(style="display: inline-block;",tags$h4("Input Data: Rounding")),
+                         div(style="display: inline-block;",
+                             bsButton(inputId = "data_round_help", label="?",  size = "extra-small",
+                                      style = "primary", type= "action"),
+                             bsPopover("data_round_help", title = "Rounding input data", content = 
+                                         paste(
+                                           "If turned on, then input variables like escapement and terminal run are rounded to the nearest integer"  
+                                         ),
+                                       "bottom", trigger = "click")),        
+         )),
+         
+         checkboxInput("data_round", label="Round data to integer?", value = TRUE ),
+         
+         fluidRow(column(10, div(style="display: inline-block;",tags$h4("Covariate Models: Complex Sibling Regressions, NoAge Covar")),
             div(style="display: inline-block;",
                             bsButton(inputId = "covar_rescale_help", label="?",  size = "extra-small",
                                      style = "primary", type= "action"),
@@ -180,6 +194,8 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
                                 )),
                                 
          checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE )
+      
+
                         
         #fluidRow(column(12, div(style="display: inline-block;",
         #      
