@@ -25,12 +25,7 @@ analysts' time for exploration and interpretation.
 
 *Version 2.1: Spring 2024 Update --------------------------------------------*
 
-The only revision in this update deals with rounding of the input data.
-Some models were crashing if input variables like escapement or terminal run
-included values with decimals (e.g., after infilling). The new default is to round
-these numbers when inputs are being read in, but for some use cases (e.g.,  time
-series model of survival rates) the rounding needs to be turned off on 
-**Setting Up/Data Treatement Settings**.
+The only revision in this update deals with rounding of the abundance input data. Some models (e.g., complex sibling regression)  can crash if input variables like escapement or terminal run included values with decimals. The new default is to round these numbers when inputs are being read in, but for some cases (e.g., time series model of survival rates) the rounding needs to be turned off on **Setting Up/Data Treatment Settings**.
 
 *Version 2: 2023 Update --------------------------------------------*
 
