@@ -249,6 +249,15 @@ library("shinyBS")
 			records.keep <-  data.use$Run_Year %in% yrs.window
 			data.use <- data.use[records.keep,]
 			data.use <- cbind(settings.tmp[1:dim(data.use)[1],],data.use)
+			
+			# new rounding step 2024-04-23
+			if(input$data_round){
+			  data.use$Average_Escapement <- round(data.use$Average_Escapement)
+			  data.use$Average_Terminal_Run <- round(data.use$Average_Terminal_Run)
+			 }
+			
+			
+			
 			}
 
 	return(data.use)

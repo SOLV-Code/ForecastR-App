@@ -1,6 +1,6 @@
-#### Version 2.0: 2023-02-12
+#### Version 2.1: 2024-04-23
 
-You are working with the *second* full release of the SalmonForecastR App.
+You are working with an updated version of the *second* full release of the SalmonForecastR App.
 The ForecastR team is trying to address quirks and bugs
 as they are found by users like you. 
 
@@ -23,6 +23,9 @@ analysts' time for exploration and interpretation.
 
 **What's New?**
 
+*Version 2.1: Spring 2024 Update --------------------------------------------*
+
+The only revision in this update deals with rounding of the abundance input data. Some models (e.g., complex sibling regression)  can crash if input variables like escapement or terminal run included values with decimals. The new default is to round these numbers when inputs are being read in, but for some cases (e.g., time series model of survival rates) the rounding needs to be turned off on **Setting Up/Data Treatment Settings**.
 
 *Version 2: 2023 Update --------------------------------------------*
 
