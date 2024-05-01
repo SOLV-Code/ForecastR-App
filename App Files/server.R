@@ -252,8 +252,10 @@ library("shinyBS")
 			
 			# new rounding step 2024-04-23
 			if(input$data_round){
-			  data.use$Average_Escapement <- round(data.use$Average_Escapement)
-			  data.use$Average_Terminal_Run <- round(data.use$Average_Terminal_Run)
+			  
+			  if("Average_Escapement" %in% names(data.use)){data.use$Average_Escapement <- round(data.use$Average_Escapement)}
+			  if("Average_Terminal_Run" %in% names(data.use)){data.use$Average_Terminal_Run <- round(data.use$Average_Terminal_Run) }
+			  
 			 }
 			
 			
