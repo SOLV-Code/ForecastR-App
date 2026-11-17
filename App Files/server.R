@@ -345,6 +345,17 @@ ages.list <-  reactive({
 	return(ages.vec)
 	})
 
+ages.list.multi <-  reactive({
+  data.file.tmp <- data.file()
+  ages.vec <-   paste0("Age ",sort(unique(data.file.tmp$Age_Class)))
+  
+  if(length(ages.vec)>1){ages.vec <- c("Total",ages.vec)}
+  if(length(ages.vec)==1){ages.vec <- c("Total")}
+  
+  return(ages.vec)
+})
+
+
 
 
 ages.list.short <-  reactive({
@@ -703,6 +714,12 @@ output$axis.label.sel <- renderUI({
 					})
 
 
+	
+	
+	
+	
+	
+	
 
 	  explore.fc.table <- reactive({
 
@@ -972,6 +989,17 @@ output$axis.label.sel <- renderUI({
 # MODEL COMPARISON PIECES ("Compare" Tab)
 ######################################################################
 
+  # Ages List for Explore Tab
+  output$ages.menu.compare <- renderUI({
+    selectizeInput("compare.ageclass", label=NULL, 
+                   choices = ages.list.multi(),
+                   multiple=FALSE, selected=ages.list.multi()[1])
+  })
+  
+  
+  
+  
+  
 	  output$compare.ageclass <- renderText({  input$compare.ageclass })
 
   

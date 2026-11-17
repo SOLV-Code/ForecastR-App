@@ -197,23 +197,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
                                 
          checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE ),
          
-         fluidRow(div(style="display: inline-block;", tags$h4("Testing")),
-                  div(style="display: inline-block;",
-                      bsButton(inputId = "test_help", label="?",  size = "extra-small",
-                               style = "primary", type= "action"),
-                      bsPopover("test_help", title = "Model Types", content = 
-                                  paste("START (Run Year): data subsetting, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
-                                        "Available models are determined based on the input data.",
-                                        "Model-specific settings will show up below.",
-                                        "For an overview of model types and their data requirements, refer to the",
-                                        a("Model Types Wiki Page",
-                                          href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
-                                "bottom", trigger = "click")) ),
-         fluidRow(column(6,	selectizeInput("TEST", label=NULL, choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective")),
-         )
-         
-         
-                        
+
         #fluidRow(column(12, div(style="display: inline-block;",
         #      
         #div(style="display:inline-block;width:30%;text-align: left;",
@@ -549,21 +533,58 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		tags$p("Note: Running a new batch of models takes a little time"),
 	
 		
-		selectizeInput("compare.ageclass", "Age Class (Some Tabs)", choices = ages.menu.list.multi, selected=ages.menu.list[1]),
+		
 
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Age Class")),
+		         div(style="display: inline-block;",
+		             bsButton(inputId = "compare_ageclass_help", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("compare_ageclass_help", title = "AGE CLASS FOR DISPLAY", content = 
+		                         paste("Some panels show plots or tables by Age.",
+		                               "Select either TOTAL or one age class."
+		                         ),
+		                       "bottom", trigger = "click")) ),
+		fluidRow(column(6,uiOutput("ages.menu.compare"))  )  ,
+		
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h3("Time Window")) ),
 		
-		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
+
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Start (Run Years)")),
+		         div(style="display: inline-block;",
+		             bsButton(inputId = "startrunyear_help_compare", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("startrunyear_help_compare", title = "START (RUN YEARS)", content = 
+		                         paste("Used for data subsetting, any records before start year will be exluded.",
+		                               "Subsetting is based on the run year (a.k.a. return year), not the brood year!"),
+		                       "bottom", trigger = "click")) ),
+		
 		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
+		fluidRow(column(12,	
+		                sliderInput("yr.range.compare", label=NULL, sep="",min = 1960, max = 2020, value = 1975,animate=FALSE))
+		)	  ,
+		
+		
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Min Yrs for Retro")),
+		         div(style="display: inline-block;",
+		             bsButton(inputId = "minretroyears_help_compare", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("minretroyears_help_compare", title = "MINIMUM NUMBER OF YEARS FOR RETROSPECTIVE", content = 
+		                         paste( "Default for model ranking is based on the distribution or errors from a retrospective test",
+		                               "with a specified mimimum number of observations (i.e. need at least x obs for the first year of the retrospective).",
+		                               "Note that the retrospective test may be inappropriate for short time series (few values to generate performance measures) and will cause an error if selected value",
+		                               "exceeds (years - 1) for the oldest age class.",
+		                               "Change settings for model ranking at the bottom."
+		                               
+		                               ),
+		 		                       "bottom", trigger = "click")) ),
+			fluidRow(column(12,	
+		                sliderInput("min.retroyrs.compare", label=NULL, sep="",min = 10, max = 35, value = 15,animate=FALSE))
+		)	  ,		
 		
 		
 		
-		sliderInput("yr.range.compare", "Start (Run Years)", sep="",min = 1960, max = 2020, value = 1975,animate=FALSE),
 		
-		
-		
-		sliderInput("min.retroyrs.compare", "Min Yrs for Retro", sep="",min = 10, max = 35, value = 15,animate=FALSE),
 		
 		
 		tags$hr(style = "border-top: 1px solid #000000;"),
@@ -655,12 +676,55 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		tags$hr(style = "border-top: 1px solid #000000;"),
 		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h3("Model Ranking")) ),
 		
-    selectizeInput("retrotype.compare", "Performance Measure Type", choices = retro.types, selected=retro.types[1]),
+    
 		
-		checkboxGroupInput("compare.pm", label="Perf. Measures for Model Ranking",
-				choices=c("MRE","MAE","MPE","MAPE","MASE","RMSE")   ,
-					selected = c("MRE","MAE","MPE","MAPE","MASE","RMSE") , inline = TRUE),
-		checkboxInput("rel.bol","Use Scaled Ranking",value=FALSE)
+		selectizeInput("retrotype.compare", "Performance Measure Type", choices = retro.types, selected=retro.types[1]),
+		
+		
+		
+		
+		
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Performance Measures")),
+		         div(style="display: inline-block;",
+		             bsButton(inputId = "pm_help", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("pm_help", title = "PERFORMANCE MEASURES", content = 
+		                         paste("Available performance measures include mean raw error (MRE), mean absolute error (MAE),",
+		                               "mean percent error (MPE), mean absolute percent error (MAPE), mean absolute scaled error (MASE),",
+		                               "and root mean square error (RMSE). Each has different properties and they can be used individually or in any combination.",
+		                               "Default setting is to rank across all available performance measures.",
+		                               "For more information about the performance measures, see the ",
+		                               a("Performance Evaluation Wiki Page",
+		                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/8-Retrospective-Performance", target="_blank"),"."
+		                         ),
+		                       "bottom", trigger = "click")) ),
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:0em", 
+		             column(12,	checkboxGroupInput("compare.pm", label=NULL,
+		                                           choices=c("MRE","MAE","MPE","MAPE","MASE","RMSE")   ,
+		                                           selected = c("MRE","MAE","MPE","MAPE","MASE","RMSE") , inline = TRUE)) )
+		)	  ,
+		
+		
+
+		
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Use Scaled Ranking?")),
+		         div(style="display: inline-block;",
+		             bsButton(inputId = "scaled_ranking_help", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("scaled_ranking_help", title = "SCALED RANKING", content = 
+		                         paste("Scaled ranking is an alternative method to ordinal ranking that preserves the relative performance of models as represented in each performance measures.",
+		                               "For more information about model ranking details, see the ",
+		                               a("Model Ranking Wiki Page",
+		                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/9-Model-Ranking", target="_blank"),"."
+		                         ),
+		                       "bottom", trigger = "click")) ),
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-1em", column(6,	checkboxInput("rel.bol","Yes",value=FALSE)) )
+		)	  ,
+		
+		
+		
+		
+		
 		#downloadButton("downloadComparisonTxt", "x Download text file"),
 		#downloadButton("downloadComparisonCsv", "x Download csv files"),
 		#downloadButton("downloadComparisonRep", "x Download pdf report"),
