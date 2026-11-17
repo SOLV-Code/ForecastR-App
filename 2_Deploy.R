@@ -1,6 +1,8 @@
 # THIS IS THE SCRIPT PACKS UP THE APP AND SENDS IT TO THE SHINY SERVER
 
-
+install.packages("devtools") # Install the devtools package
+library(devtools) # Load the devtools package.
+pak::pak("SalmonForecastR/ForecastR-Package")
 
 
 # RESOURCES

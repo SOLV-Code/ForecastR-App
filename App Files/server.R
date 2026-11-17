@@ -547,7 +547,9 @@ output$axis.label.sel <- renderUI({
 
 				fit.obj <- fitModel(model= input$model_use_precheck, data = sample.dat$data,
 														data.sibreg = sample.dat$sibreg.in,
-														settings = settings.use ,tracing=TRUE)
+														settings = settings.use ,
+														covariates = sample.dat$covariates,
+														tracing=TRUE)
 
 
 				#print(input$model_use_precheck)
