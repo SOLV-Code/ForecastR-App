@@ -383,8 +383,36 @@ axis.label.default <-  reactive({
 
 # model list for Explore tab
 output$model_menu_precheck <- renderUI({
-	selectizeInput("model_use_precheck", "Model Type", choices = model.list(),
-								 multiple=FALSE, selected=model.list()[1])
+
+  
+#  	selectizeInput("model_use_precheck", "Model Type", choices = model.list(),
+#								 multiple=FALSE, selected=model.list()[1])
+
+  tagList( fluidRow(div(style="display: inline-block;padding: 0px 0px; margin-top:-6em", tags$h5("Model Type")),
+           div(style="display: inline-block;",
+               bsButton(inputId = "modeltype_help", label="?",  size = "extra-small",
+                        style = "primary", type= "action"),
+               bsPopover("modeltype_help", title = "MODEL TYPE", content = 
+                           paste("Select a type of forecasting model.",
+                                 "Available models are determined based on the type of input data.",
+                                 "Model-specific settings will show up below.",
+                                 "For an overview of model types and their data requirements, refer to the",
+                                 a("Model Types Wiki Page",
+                                   href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
+                         "bottom", trigger = "click")) 
+           ),
+  
+  # slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
+  fluidRow(column(7,	selectizeInput("model_use_precheck", label=NULL, choices = model.list(),
+                          						 multiple=FALSE, selected=model.list()[1]))
+  )	  
+  
+  # end taglist
+  )
+  
+  
+  
+  
 		})
 
 # Predictor Variable List for Explore Tab
@@ -418,19 +446,19 @@ output$boxcox.precheck.menu <- renderUI({
 
 # Naive: num yrs avg option for Explore Tab
 output$avgyrs_precheck_menu <- renderUI({
-	numericInput("precheck.avgyrs", label=h5("Avg Years"), value = 3 , min = 1, max = 10, step = 1,   width = "50%")
+	numericInput("precheck.avgyrs", label=h5("Avg Years"), value = 3 , min = 1, max = 10, step = 1,   width = "25%")
 })
 
 
 # Sibreg Kalman: AVG N OPTION for Explore Tab
 output$intavg.precheck.menu <- renderUI({
-	numericInput("precheck.intavg", label=h5("Avg n Est"), value = 5, min = 1, max = 10, step = 1,   width = "50%")
+	numericInput("precheck.intavg", label=h5("Avg n Est"), value = 5, min = 1, max = 10, step = 1,   width = "25%")
 })
 
 
 # Sibreg Pooled Simple: max age classes to pool
 output$max.pool.precheck.menu <- renderUI({
-	numericInput("precheck.max.pool", label=h5("Max Pool"), value = 3, min = 2, max = 5, step = 1,   width = "70%")
+	numericInput("precheck.max.pool", label=h5("Max Pool"), value = 3, min = 2, max = 5, step = 1,   width = "25%")
 })
 
 

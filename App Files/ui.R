@@ -197,33 +197,6 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
                                 
          checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE ),
          
-         selectizeInputWithButtons(
-           inputId = 'selection',
-           label = 'Select something:',
-           label_title = paste("START (Run Year): data subsettig, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
-                               "Available models are determined based on the input data.",
-                               "Model-specific settings will show up below.",
-                               "For an overview of model types and their data requirements, refer to the",
-                               a("Model Types Wiki Page",
-                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
-           actionButton(
-             'btn1',
-             '',
-             icon('tag', 'fa-fw'),
-             title = 'this does something'
-           ),
-           actionButton(
-             'btn2',
-             '',
-             icon('chevron-right', 'fa-fw'),
-             title = 'this does something else'
-           ),
-           options = list(create = TRUE)
-         ),
-         
-
-      
-
          fluidRow(div(style="display: inline-block;", tags$h4("Testing")),
                   div(style="display: inline-block;",
                       bsButton(inputId = "test_help", label="?",  size = "extra-small",
@@ -259,27 +232,48 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 
              
 	pageWithSidebar(
-	headerPanel("Explore Models"),
-
+	# not working to remove whitespace on top (working on subheaders below)
+	 #titlePanel(div(style="display: inline-block; padding: 0px 0px; margin-top:-4em", tags$h1("Explore Models"))),
+  titlePanel("Explore Models"),
+	  
 	sidebarPanel(width = 3,
+	   
+	 tags$style(".popover{
+            max-width: 150%;
+          }"),
+	             
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
 	  
-	  fluidRow(div(style="display: inline-block;", tags$h3("Model Options")),
-	                  div(style="display: inline-block;",
-	                      bsButton(inputId = "precheck_model_selection_help", label="?",  size = "extra-small",
-	                               style = "primary", type= "action"),
-	                      bsPopover("precheck_model_selection_help", title = "Model Types", content = 
-	                                  paste("START (Run Year): data subsettig, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
-	                                  "Available models are determined based on the input data.",
-	                                  "Model-specific settings will show up below.",
-	                                  "For an overview of model types and their data requirements, refer to the",
-	                                  a("Model Types Wiki Page",
-	                                    href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
-	                                "bottom", trigger = "click"))
+	  fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h3("Model Options")),
+	                  #div(style="display: inline-block;",
+	                 #     bsButton(inputId = "precheck_model_selection_help", label="?",  size = "extra-small",
+	                 #             style = "primary", type= "action"),
+	                 #     bsPopover("precheck_model_selection_help", title = "Model Types", content = 
+	                 #                 paste("START (Run Year): data subsetting, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
+	                 #                 "Available models are determined based on the input data.",
+	                 #                 "Model-specific settings will show up below.",
+	                  #                "For an overview of model types and their data requirements, refer to the",
+	                   #               a("Model Types Wiki Page",
+	                   #                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
+	                   #             "bottom", trigger = "click"))
 	  ),
 	  #numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
+	  
+	  fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Start (Run Years)")),
+	           div(style="display: inline-block;",
+	               bsButton(inputId = "startrunyear_help", label="?",  size = "extra-small",
+	                        style = "primary", type= "action"),
+	               bsPopover("startrunyear_help", title = "START (RUN YEARS)", content = 
+	                           paste("Used for data subsetting, any records before start year will be exluded.",
+	                                 "Subsetting is based on the run year (a.k.a. return year), not the brood year!"),
+	                         "bottom", trigger = "click")) ),
+	  
 	  # slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
-	  sliderInput("yr.range.precheck", "Start (Run Years)",sep="",min = 1960, max = 2020, value = 1975,animate=TRUE),
+	  fluidRow(column(12,	sliderInput("yr.range.precheck", label=NULL,sep="",min = 1960, max = 2020, value = 1975,animate=TRUE))
+	  )	  ,
+	  
+	  
+	  
 	  #tags$hr(style = "border-top: 1px solid #000000;"),	  
 		uiOutput("model_menu_precheck"),  # MODEL SELECTION HAPPENS HERE
 		conditionalPanel(condition = "input['model_use_precheck'] == 'ReturnRate'",
@@ -409,23 +403,54 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                 #div(style="display:inline-block;width:80%;text-align: center;",uiOutput("complex.precheck.menu2"))
 		                 
 		),
-		tags$hr(style = "border-top: 1px solid #000000;"),
-		fluidRow(div(style="display: inline-block;", tags$h3("Forecast Intervals")),
+
+				tags$hr(style = "border-top: 1px solid #000000;"),
+
+				fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-4em", tags$h3("Forecast Intervals"))),
+		        # div(style="display: inline-block;",
+		        #     bsButton(inputId = "precheck_interval_help", label="?",  size = "extra-small",
+		        #              style = "primary", type= "action"),
+		        #     bsPopover("precheck_interval_help", title = "Forecast Intervals", content = 
+		        #                 paste("Three types of forecastinterval are currently available. RETROSPECTIVE uses the distribution or errors from a retrospective test",
+		        #                 "with a specified mimimum number of observations (i.e. need at least x obs for the first year of the retrospective).",
+		        #                 "Note that the retrospective interval may be inappropriate for short time series (few values to generate interval) and will cause an error if selected value",
+		         #                "exceeds (years - 1) for the oldest age class",
+		        #                 "PREDICTION uses the standard deviation of residuals from the model fit.",
+		        #                 "BOOTSTRAP resamples the data and restimates the forecast for each of n resampled data set"),
+		        #               "bottom", trigger = "click"))
+		#),
+		
+		
+		#fluidRow(column(1),
+		#         column(5,selectizeInput("interval.type.precheck", "Interval Type", choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective")),
+		#         ),
+		
+		
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Interval Type")),
 		         div(style="display: inline-block;",
-		             bsButton(inputId = "precheck_interval_help", label="?",  size = "extra-small",
+		             bsButton(inputId = "precheck_intervaltype_help", label="?",  size = "extra-small",
 		                      style = "primary", type= "action"),
-		             bsPopover("precheck_interval_help", title = "Forecast Intervals", content = 
-		                         paste("Three types of interval are currently available. RETROSPECTIVE uses the distribution or errors from a retrospective test",
-		                         "with a specified mimimum number of observations (i.e. need at least x obs for the first year of the retrospective).",
-		                         "Note that the retrospective interval may be inappropriate for short time series (few values to generate interval) and will cause an error if selected value",
-		                         "exceeds (years - 1) for the oldest age class",
-		                         "PREDICTION uses the standard deviation of residuals from the model fit.",
-		                         "BOOTSTRAP resamples the data and restimates the forecast for each of n resampled data set"),
-		                       "bottom", trigger = "click"))
-		),
-		fluidRow(column(1),
-		         column(5,selectizeInput("interval.type.precheck", "Interval Type", choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective")),
-		         ),
+		             bsPopover("precheck_intervaltype_help", title = "INTERVAL TYPE", content = 
+		                         paste("Three types of forecast interval are currently available.",
+		                               "For more information about each method, see the ",
+		                               a("Forecast Intervals Wiki Page",
+		                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/7-Forecast-Intervals", target="_blank"),".",
+		                              "Briefly: RETROSPECTIVE uses the distribution or errors from a retrospective test",
+		                               "with a specified mimimum number of observations (i.e. need at least x obs for the first year of the retrospective).",
+		                               "Note that the retrospective interval may be inappropriate for short time series (few values to generate interval) and will cause an error if selected value",
+		                               "exceeds (years - 1) for the oldest age class",
+		                               "PREDICTION uses the standard deviation of residuals from the model fit.",
+		                               "BOOTSTRAP resamples the data and restimates the forecast for each of n resampled data set.",
+		                               "For time series models, including naive models, there are two bootstrap options (meboot, stlboot).",
+		                               "For all regression-based models, a paired observation bootstrap is used."
+		                               ),
+		                       "bottom", trigger = "click")) ),
+		
+		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
+		fluidRow(column(6,	selectizeInput("interval.type.precheck",label=NULL , choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective"))
+		)	  ,
+		
+
 		conditionalPanel(condition = "input['interval.type.precheck'] == 'Retrospective'",
 		                 fluidRow(column(1),
 		                          column(10,sliderInput("min.retroyrs.explore", "Min Yrs for Retro", sep="",min = 10, max = 35, value = 15,animate=FALSE))
