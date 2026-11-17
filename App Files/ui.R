@@ -195,9 +195,51 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
                                       "bottom", trigger = "click")),        
                                 )),
                                 
-         checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE )
+         checkboxInput("cov_rescale", label="Rescale Covariates?", value = TRUE ),
+         
+         selectizeInputWithButtons(
+           inputId = 'selection',
+           label = 'Select something:',
+           label_title = paste("START (Run Year): data subsettig, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
+                               "Available models are determined based on the input data.",
+                               "Model-specific settings will show up below.",
+                               "For an overview of model types and their data requirements, refer to the",
+                               a("Model Types Wiki Page",
+                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
+           actionButton(
+             'btn1',
+             '',
+             icon('tag', 'fa-fw'),
+             title = 'this does something'
+           ),
+           actionButton(
+             'btn2',
+             '',
+             icon('chevron-right', 'fa-fw'),
+             title = 'this does something else'
+           ),
+           options = list(create = TRUE)
+         ),
+         
+
       
 
+         fluidRow(div(style="display: inline-block;", tags$h4("Testing")),
+                  div(style="display: inline-block;",
+                      bsButton(inputId = "test_help", label="?",  size = "extra-small",
+                               style = "primary", type= "action"),
+                      bsPopover("test_help", title = "Model Types", content = 
+                                  paste("START (Run Year): data subsetting, any records before start year will be exluded. MODEL TYPE: Select a type of forecasting model.",
+                                        "Available models are determined based on the input data.",
+                                        "Model-specific settings will show up below.",
+                                        "For an overview of model types and their data requirements, refer to the",
+                                        a("Model Types Wiki Page",
+                                          href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/5-Forecast-Models#model-types", target="_blank"),"."),
+                                "bottom", trigger = "click")) ),
+         fluidRow(column(6,	selectizeInput("TEST", label=NULL, choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective")),
+         )
+         
+         
                         
         #fluidRow(column(12, div(style="display: inline-block;",
         #      

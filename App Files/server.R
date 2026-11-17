@@ -548,7 +548,7 @@ output$axis.label.sel <- renderUI({
 				fit.obj <- fitModel(model= input$model_use_precheck, data = sample.dat$data,
 														data.sibreg = sample.dat$sibreg.in,
 														settings = settings.use ,
-														covariates = sample.dat$covariates,
+														#covariates = sample.dat$covariates, # for redesign?
 														tracing=TRUE)
 
 
@@ -589,8 +589,8 @@ output$axis.label.sel <- renderUI({
 													 data.sibreg = sample.dat$sibreg.in,
 													 fc.yr= settings.basic.use$FCYear,
 													 settings = settings.use,
-													 predictors = sample.dat$predictors,
-													 covariates = sample.dat$covariates,
+													 #predictors = sample.dat$predictors, # for redesign?
+													 #covariates = sample.dat$covariates, # for redesign?
 													 tracing=FALSE)
 
 				#}
