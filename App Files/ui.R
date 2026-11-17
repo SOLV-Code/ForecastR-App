@@ -239,7 +239,7 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 	sidebarPanel(width = 3,
 	   
 	 tags$style(".popover{
-            max-width: 150%;
+            max-width: 100%;
           }"),
 	             
 	  add_busy_spinner(spin = "fading-circle", position = "full-page"),
@@ -446,7 +446,6 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                               ),
 		                       "bottom", trigger = "click")) ),
 		
-		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
 		fluidRow(column(6,	selectizeInput("interval.type.precheck",label=NULL , choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective"))
 		)	  ,
 		
@@ -548,15 +547,116 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		#actionButton("resetmodel.compare", "x Reset Models"),
 		add_busy_spinner(spin = "fading-circle"),
 		tags$p("Note: Running a new batch of models takes a little time"),
-				selectizeInput("compare.ageclass", "Age Class (Some Tabs)", choices = ages.menu.list.multi, selected=ages.menu.list[1]),
-		selectizeInput("retrotype.compare", "Performance Measure Type", choices = retro.types, selected=retro.types[1]),
-		selectizeInput("interval.type.compare", "Interval Type", choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective"),
-		numericInput("boot.n.compare", "Interval Sample",  value = 100 , min = 10, max = 1000, step = 10,   width = "50%"),
-		selectizeInput("boot.type.compare", "Bootstrap Type", choices = c("meboot","stlboot"), selected="meboot"),
+	
+		
+		selectizeInput("compare.ageclass", "Age Class (Some Tabs)", choices = ages.menu.list.multi, selected=ages.menu.list[1]),
+
+		tags$hr(style = "border-top: 1px solid #000000;"),
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h3("Time Window")) ),
+		
 		#numericInput("fc.yr", "FC Year", value=2018),  # comes from data file for now
 		# slider below is for now changed to only give start year, then add the end year as 1-fc.yr on the server side
+		
+		
+		
 		sliderInput("yr.range.compare", "Start (Run Years)", sep="",min = 1960, max = 2020, value = 1975,animate=FALSE),
+		
+		
+		
 		sliderInput("min.retroyrs.compare", "Min Yrs for Retro", sep="",min = 10, max = 35, value = 15,animate=FALSE),
+		
+		
+		tags$hr(style = "border-top: 1px solid #000000;"),
+		
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h3("Forecast Intervals")) ),
+		
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Interval Type")),
+		         div(style="display: inline-block;",
+		             bsButton(inputId = "compare_intervaltype_help", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("compare_intervaltype_help", title = "INTERVAL TYPE", content = 
+		                         paste("Three types of forecast interval are currently available.",
+		                               "For more information about each method, see the ",
+		                               a("Forecast Intervals Wiki Page",
+		                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/7-Forecast-Intervals", target="_blank"),".",
+		                               "Briefly: RETROSPECTIVE uses the distribution or errors from a retrospective test",
+		                               "with a specified mimimum number of observations (i.e. need at least x obs for the first year of the retrospective).",
+		                               "Note that the retrospective interval may be inappropriate for short time series (few values to generate interval) and will cause an error if selected value",
+		                               "exceeds (years - 1) for the oldest age class",
+		                               "PREDICTION uses the standard deviation of residuals from the model fit.",
+		                               "BOOTSTRAP resamples the data and restimates the forecast for each of n resampled data set.",
+		                               "For time series models, including naive models, there are two bootstrap options (meboot, stlboot).",
+		                               "For all regression-based models, a paired observation bootstrap is used."
+		                         ),
+		                       "bottom", trigger = "click")) ),
+		fluidRow(column(6,	selectizeInput("interval.type.compare", label=NULL, 
+		                                  choices = c("Retrospective","Prediction","Bootstrap"), selected="Retrospective"))
+		)	  ,
+		
+		
+		conditionalPanel(condition = "input['interval.type.compare'] == 'Bootstrap'",
+		                 fluidRow(
+		                          #column(4,numericInput("boot.n.compare", "Sample",  value = 100 , min = 10, max = 1000, step = 10,   width = "100%")),
+		                   
+		                   column(5,
+		                          
+		                          div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Sample")),
+		                          div(style="display: inline-block;",
+		                              bsButton(inputId = "compare_bootsample_help", label="?",  size = "extra-small",
+		                                       style = "primary", type= "action"),
+		                              bsPopover("compare_bootsample_help", title = "BOOTSTRAP SAMPLE SIZE", content = 
+		                                          paste("Number of bootstrap samples to generate.",
+		                                                "For details see the ",
+		                                                a("Forecast Intervals Wiki Page",
+		                                                  href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/7-Forecast-Intervals", target="_blank"),"."
+		                                          ),
+		                                        "bottom", trigger = "click")) ,
+		                          numericInput("boot.n.compare", label = NULL,  value = 100 , min = 10, max = 1000, step = 10,   width = "100%")
+		                          
+		                          ),
+		                   
+		                          column(7,
+		                                 
+		                                 div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Type")),
+		                                 div(style="display: inline-block;",
+		                                     bsButton(inputId = "compare_bootstype_help", label="?",  size = "extra-small",
+		                                              style = "primary", type= "action"),
+		                                     bsPopover("compare_bootstype_help", title = "BOOTSTRAP TYPE FOR TIME SERIES MODELS", content = 
+		                                                 paste("Use either Maximum Entropy bootstrap (meboot) or Seasonal Trend LOESS bootstrap (stlboot) for time series.",
+		                                                 "For all regression-based models paired observation bootstrap is used.",
+		                                                       "For details see the ",
+		                                                       a("Forecast Intervals Wiki Page",
+		                                                         href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/7-Forecast-Intervals", target="_blank"),"."
+		                                                 ),
+		                                               "bottom", trigger = "click")) ,
+		                                 
+		                                 selectizeInput("boot.type.compare", label=NULL, choices = c("meboot","stlboot"), selected="meboot")
+		                                 )
+		                 )),	
+		
+		conditionalPanel(condition = "input['interval.type.compare'] == 'Retrospective'",
+	                 fluidRow(column(10,fluidRow(div(style="display: inline-block; color: red", 
+	                 tags$p("NOTE: Retrospective intervals use the  time window and results from the retrospective performance test. Set min years below."
+	                        )) 
+		                 )) ) ),	
+
+		conditionalPanel(condition = "input['interval.type.compare'] == 'Prediction' & input['model_use_precheck'] == 'NoAgeCovar'",  
+		                 fluidRow(column(10,div(style="display: inline-block; color: red", tags$p("NOTE: Prediction intervals for NoAge Covar Models are unrealistically narrow at the moment. 
+		                                                                      Calculations and code implementation are under review. For now, use one of the other intervals for this model."
+		                                                                                          )) )) ),
+		
+		
+		
+		
+		
+		
+
+		
+		tags$hr(style = "border-top: 1px solid #000000;"),
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h3("Model Ranking")) ),
+		
+    selectizeInput("retrotype.compare", "Performance Measure Type", choices = retro.types, selected=retro.types[1]),
+		
 		checkboxGroupInput("compare.pm", label="Perf. Measures for Model Ranking",
 				choices=c("MRE","MAE","MPE","MAPE","MASE","RMSE")   ,
 					selected = c("MRE","MAE","MPE","MAPE","MASE","RMSE") , inline = TRUE),
