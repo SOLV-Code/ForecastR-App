@@ -677,10 +677,29 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h3("Model Ranking")) ),
 		
     
+		#retro.types <- list("Retrospective" = c("Balanced" = "retro.pm.bal", "Constant Years" = "retro.pm.all.constantyrs",
+		#                                        "Variable Years" = "retro.pm.all.varyrs"),
+		#                    "Model Residuals" =c("Fitted" = "fitted.pm.last"))
 		
-		selectizeInput("retrotype.compare", "Performance Measure Type", choices = retro.types, selected=retro.types[1]),
 		
 		
+		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:-2em", tags$h5("Evaluation Type")),
+		         div(style="display: inline-block;",
+		                     bsButton(inputId = "evaltype_help", label="?",  size = "extra-small",
+		                      style = "primary", type= "action"),
+		             bsPopover("evaltype_help", title = "EVALUATION TYPE", content = 
+		                         paste("Model ranking can be either based on a retrospective evaluation or the residuals from fitted models (i.e., using all data).",
+		                               "Retrospective evaluation of age-structured forecasts requires a choice regarding the time window used for each age.",
+		                               "Available options are: BALANCED - using the same retrospective years for all ages (i.e., Use all the retrospective years that have the min.yrs data for the oldest age);",
+		                               "CONSTANT - Use all the retrospective years that have the min.yrs data for the youngest age; or",
+		                               "VARIABLE - vary the number of retrospective years used (i.e more for younger ages), but keep the number of years used to fit the model the same.",
+		                               "For more information about these alternative model comparison approaches, see the ",
+		                               a("Performance Evaluation Wiki Page",
+		                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/8-Performance-Evaluation", target="_blank"),"."
+		                         ),
+		                       "bottom", trigger = "click")) ),
+		fluidRow(column(6,	selectizeInput("retrotype.compare", label=NULL, choices = retro.types, selected=retro.types[1])) 
+		)	  ,		
 		
 		
 		
@@ -693,9 +712,9 @@ tabPanel("Data Treatment Settings", value= "data.treatment.settings",
 		                               "mean percent error (MPE), mean absolute percent error (MAPE), mean absolute scaled error (MASE),",
 		                               "and root mean square error (RMSE). Each has different properties and they can be used individually or in any combination.",
 		                               "Default setting is to rank across all available performance measures.",
-		                               "For more information about the performance measures, see the ",
+		                               "For more information about the performance measures, see the summary table on the",
 		                               a("Performance Evaluation Wiki Page",
-		                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/8-Retrospective-Performance", target="_blank"),"."
+		                                 href = "https://github.com/SalmonForecastR/ForecastR-Releases/wiki/8-Performance-Evaluation#performance-measures", target="_blank"),"."
 		                         ),
 		                       "bottom", trigger = "click")) ),
 		fluidRow(div(style="display: inline-block; padding: 0px 0px; margin-top:0em", 
